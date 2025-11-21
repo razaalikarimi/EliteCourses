@@ -26,7 +26,7 @@ import ViewLecture from './pages/ViewLecture'
 import SearchWithAi from './pages/SearchWithAi'
 import getAllReviews from './customHooks/getAllReviews'
 
-export const serverUrl = "https://elitecourses-backend.onrender.com"
+export const serverUrl = "https://elitecoursesb.onrender.com"
 
 function App() {
   
