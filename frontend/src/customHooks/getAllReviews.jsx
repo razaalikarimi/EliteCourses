@@ -1,28 +1,35 @@
-import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { serverUrl } from '../App'
-import { setAllReview } from '../redux/reviewSlice'
-import axios from 'axios'
+// src/hooks/getAllReviews.jsx
 
-const getAllReviews = () => {
+import { useEffect } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setAllReview } from "../redux/reviewSlice";
+import { serverUrl } from "../App";
 
-   const dispatch = useDispatch()
-  
+const useAllReviews = () => {
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
-    const getAllReviews = async () => {
+  useEffect(() => {
+    const fetchAllReviews = async () => {
       try {
-        const result = await axios.get(serverUrl + "/api/review/allReview" , {withCredentials:true})
-        console.log(result.data)
-        dispatch(setAllReview(result.data))
-        
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getAllReviews()
-  },[])
-  
-}
+        const result = await axios.get(
+          serverUrl + "/api/review/allReview",
+          { withCredentials: true }
+        );
 
-export default getAllReviews
+        console.log("all reviews:", result.data);
+        dispatch(setAllReview(result.data));
+      } catch (error) {
+        console.log("all reviews error:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+      }
+    };
+
+    fetchAllReviews();
+  }, [dispatch]);
+};
+
+export default useAllReviews;
