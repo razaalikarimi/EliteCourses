@@ -17,18 +17,18 @@ let port = process.env.PORT || 8000;
 let app = express();
 
 const allowedOrigins = [
-  "http://localhost:5173",               // local dev
-  "https://elitecoursesf.onrender.com",  // deployed frontend
+  "http://localhost:5173",               
+  "https://elitecoursesf.onrender.com",  
 ];
 
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ CORS middleware
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      // origin null ho sakta hai (Postman, health checks, etc.)
+    
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -40,7 +40,7 @@ app.use(
   })
 );
 
-// ✅ Routes
+
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/course", courseRouter);
