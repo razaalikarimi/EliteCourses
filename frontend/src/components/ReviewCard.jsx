@@ -4,7 +4,7 @@ import { FaRegStar } from "react-icons/fa";
 const ReviewCard = ({ text, name, image, rating, role }) => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 max-w-sm w-full">
-      {/* ⭐ Rating Stars */}
+      {/*  Rating Stars */}
       <div className="flex items-center mb-3 text-yellow-400 text-sm">
         {Array(5)
           .fill(0)
@@ -15,10 +15,10 @@ const ReviewCard = ({ text, name, image, rating, role }) => {
           ))}
       </div>
 
-      {/* 💬 Review Text */}
+      {/*  Review Text */}
       <p className="text-gray-700 text-sm mb-5">{text}</p>
 
-      {/* 👤 Reviewer Info */}
+      {/*  Reviewer Info */}
       <div className="flex items-center gap-3">
         <img
           src={image}
