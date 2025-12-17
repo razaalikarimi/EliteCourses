@@ -15,7 +15,7 @@ function ReviewPage() {
     }
   }, [allReview]);
 
-  const fallbackImg = "/default-avatar.png"; // koi bhi placeholder path de sakta hai
+  const fallbackImg = "/default-avatar.png"; 
 
   return (
     <div className="flex items-center justify-center flex-col">
@@ -31,7 +31,7 @@ function ReviewPage() {
         className="w-[100%] min-[100vh] flex items-center justify-center flex-wrap gap-[50px] lg:p-[50px] md:p-[30px] p-[10px] mb-[40px]"
       >
         {latestReview
-          .filter((item) => item && item.user) // jiska user null hai, skip
+          .filter((item) => item && item.user) 
           .map((item, index) => (
             <ReviewCard
               key={index}
