@@ -16,7 +16,7 @@ function ExploreCourses() {
         <div className='w-[100%] lg:w-[350px] lg:h-[100%] h-[400px]  flex flex-col items-start justify-center gap-1 md:px-[40px]  px-[20px]'>
           <span className='text-[35px] font-semibold'>Explore</span>
           <span className='text-[35px] font-semibold'>Our Courses</span>
-          <p className='text-[17px]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem vel iure explicabo laboriosam accusantium expedita laudantium facere magnam.</p>
+          <p className='text-[17px]'>Explore industry-focused courses built to upgrade skills, boost careers, and unlock new opportunities. Learn from expert mentors and gain real-world experience.</p>
           <button className='px-[20px] py-[10px] border-2 bg-[black] border-white text-white rounded-[10px] text-[18px] font-light flex gap-2 mt-[40px]' onClick={()=>navigate("/allcourses")}>Explore Courses <SiViaplay className='w-[30px] h-[30px] fill-white' /></button>
 
         </div>
