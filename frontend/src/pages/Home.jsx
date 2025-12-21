@@ -87,7 +87,7 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="w-[100%] overflow-hidden">
+    <div className="w-[70%] overflow-hidden">
       <div className="relative w-full h-screen">
         <Nav />
 
