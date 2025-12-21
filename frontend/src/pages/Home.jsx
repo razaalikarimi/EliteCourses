@@ -20,8 +20,8 @@ function Home() {
         <Nav />
         <img
           src={home}
-          {/* className="object-cover md:object-fill   w-[100%] lg:h-[100%] h-[50vh]" */}
-          className="absolute top-[60%] md:top-[65%] lg:top-[55%] w-full flex justify-center gap-3"
+           className="object-cover md:object-fill   w-[100%] lg:h-[100%] h-[50vh]" 
+        
           alt=""
         />
         <span className="lg:text-[70px] absolute  md:text-[40px]  lg:top-[10%] top-[15%] w-[100%] flex items-center justify-center text-white font-bold text-[20px] ">
