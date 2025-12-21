@@ -68,44 +68,78 @@
 // export default Home;
 
 
+import React from "react";
+import home from "../assets/home1.jpg";
+import Nav from "../components/Nav";
+import { SiViaplay } from "react-icons/si";
+import Logos from "../components/Logos";
+import Cardspage from "../components/Cardspage";
+import ExploreCourses from "../components/ExploreCourses";
+import About from "../components/About";
+import ai from "../assets/ai.png";
+import ai1 from "../assets/SearchAi.png";
+import ReviewPage from "../components/ReviewPage";
+import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
+function Home() {
 
-<div className="relative w-full h-screen">
-  <Nav />
+  const navigate = useNavigate();
 
-  <img
-    src={home}
-    className="absolute inset-0 w-full h-full object-cover"
-    alt=""
-  />
+  return (
+    <div className="w-[100%] overflow-hidden">
+      <div className="relative w-full h-screen">
+        <Nav />
 
-  <div className="absolute inset-0 bg-black/40"></div>
+        <img
+          src={home}
+          className="absolute inset-0 w-full h-full object-cover"
+          alt=""
+        />
 
-  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center text-white">
-    <h1 className="text-4xl md:text-6xl font-bold">
-      Grow Your Skills to Advance
-    </h1>
+        <div className="absolute inset-0 bg-black/40"></div>
 
-    <h2 className="text-4xl md:text-6xl font-bold -mt-4">
-      Your Career path
-    </h2>
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center text-white">
 
-    <div className="flex flex-wrap gap-4 justify-center mt-4">
-      <button
-        className="px-6 py-2 border-2 border-white rounded-lg flex items-center gap-2"
-        onClick={() => navigate("/allcourses")}
-      >
-        View all Courses
-        <SiViaplay className="w-6 h-6" />
-      </button>
+          <h1 className="text-4xl md:text-6xl font-bold">
+            Grow Your Skills to Advance
+          </h1>
 
-      <button
-        className="px-6 py-2 bg-white text-black rounded-lg flex items-center gap-2"
-        onClick={() => navigate("/searchwithai")}
-      >
-        Search with AI
-        <img src={ai} className="w-6 h-6 rounded-full" />
-      </button>
+          <h2 className="text-4xl md:text-6xl font-bold -mt-4">
+            Your Career path
+          </h2>
+
+          <div className="flex flex-wrap gap-4 justify-center mt-4">
+
+            <button
+              className="px-6 py-2 border-2 border-white rounded-lg flex items-center gap-2"
+              onClick={() => navigate("/allcourses")}
+            >
+              View all Courses
+              <SiViaplay className="w-6 h-6" />
+            </button>
+
+            <button
+              className="px-6 py-2 bg-white text-black rounded-lg flex items-center gap-2"
+              onClick={() => navigate("/searchwithai")}
+            >
+              Search with AI
+              <img src={ai} className="w-6 h-6 rounded-full hidden lg:block" />
+              <img src={ai1} className="w-6 h-6 rounded-full lg:hidden" />
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <Logos />
+      <ExploreCourses />
+      <Cardspage />
+      <About />
+      <ReviewPage />
+      <Footer />
     </div>
-  </div>
-</div>
+  );
+}
+
+export default Home;
