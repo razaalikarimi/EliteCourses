@@ -139,7 +139,12 @@ const editCourseHandler = async () => {
         <FaArrowLeftLong  className='top-[-20%] md:top-[20%] absolute left-[0] md:left-[2%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/courses")}/>
         <h2 className="text-2xl font-semibold md:pl-[60px]">Add detail information regarding course</h2>
         <div className="space-x-2 space-y-2 ">
-          <button className="bg-black text-white px-4 py-2 rounded-md" onClick={()=>navigate(`/createlecture/${selectedCourse?._id}`)}>Go to lectures page</button>
+          <button 
+            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95 flex items-center gap-2" 
+            onClick={()=>navigate(`/createlecture/${selectedCourse?._id}`)}
+          >
+            Manage Curriculum
+          </button>
           
         </div>
       </div>
@@ -151,7 +156,13 @@ const editCourseHandler = async () => {
           {!isPublished? <button className="bg-green-100 text-green-600 px-4 py-2 rounded-md border-1" onClick={()=>setIsPublished(prev=>!prev)}>Click to Publish</button> 
           :<button className="bg-red-100 text-red-600 px-4 py-2 rounded-md border-1" onClick={()=>setIsPublished(prev=>!prev)}>Click to UnPublish</button>
           }
-          <button className="bg-red-600 text-white px-4 py-2 rounded-md" disabled={loading} onClick={removeCourse}>{loading?<ClipLoader size={30} color='white'/> :"Remove Course"}</button>
+          <button 
+            className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95" 
+            disabled={loading} 
+            onClick={removeCourse}
+          >
+            {loading ? <ClipLoader size={20} color='white'/> : "Remove Course"}
+          </button>
         </div>
 
         <form className="space-y-6" onSubmit={(e)=>e.preventDefault()}>
@@ -224,7 +235,13 @@ const editCourseHandler = async () => {
 
           <div className='flex items-center justify-start gap-[15px]'>
             <button className='bg-[#e9e8e8] hover:bg-red-200 text-black border-1 border-black cursor-pointer px-4 py-2 rounded-md' onClick={()=>navigate("/courses")}>Cancel</button>
-            <button className='bg-black text-white px-7 py-2 rounded-md hover:bg-gray-500 cursor-pointer' disabled={loading} onClick={editCourseHandler}>{loading ? <ClipLoader size={30} color='white'/>:"Save"}</button>
+            <button 
+              className="px-8 py-2.5 bg-gray-900 hover:bg-black text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95" 
+              disabled={loading} 
+              onClick={editCourseHandler}
+            >
+              {loading ? <ClipLoader size={20} color='white'/> : "Save Changes"}
+            </button>
             
           </div>
         </form>

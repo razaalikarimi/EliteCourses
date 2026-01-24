@@ -116,12 +116,13 @@ function EditProfile() {
             />
           </div>
 
-          {/* Save Button */}
           <button
             type="submit"
-            className="w-full bg-[black] active:bg-[#454545] text-white py-2 rounded-md font-medium transition cursor-pointer" disabled={loading} onClick={updateProfile}
+            className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-indigo-100" 
+            disabled={loading} 
+            onClick={updateProfile}
           >
-            {loading ? <ClipLoader size={30} color='white'/> : "Save Changes"}
+            {loading ? <ClipLoader size={20} color='white'/> : "Update Profile"}
           </button>
         </form>
       </div>

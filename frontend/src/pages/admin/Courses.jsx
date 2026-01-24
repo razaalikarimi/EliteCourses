@@ -48,8 +48,11 @@ function Courses() {
             <h1 className="text-xl font-semibold">Courses</h1>
           </div>
 
-          <button className="bg-[black] text-white px-4 py-2 rounded hover:bg-gray-500" onClick={() => navigate("/createcourses")}>
-            Create Course
+          <button 
+            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95" 
+            onClick={() => navigate("/createcourses")}
+          >
+            Create New Course
           </button>
         </div>
 

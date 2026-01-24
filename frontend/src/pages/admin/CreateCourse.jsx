@@ -72,12 +72,13 @@ const CreateCourse = () => {
                         </select>
                     </div>
 
-                    {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-[black] text-white py-2 px-4 rounded-md active:bg-[#3a3a3a] transition" disabled={loading} onClick={CreateCourseHandler}
+                        className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-indigo-100" 
+                        disabled={loading} 
+                        onClick={CreateCourseHandler}
                     >
-                        {loading?<ClipLoader size={30} color='white' /> : "Create"}
+                        {loading ? <ClipLoader size={20} color='white' /> : "Initialize Course"}
                     </button>
                 </form>
             </div>

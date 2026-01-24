@@ -47,7 +47,18 @@ function Dashboard() {
             <p className="text-gray-600 text-sm">
               {userData?.description || "Start creating amazing courses for your students!"}
             </p>
-            <h1 className='px-[10px] text-center  py-[10px] border-2  bg-black border-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer' onClick={() => navigate("/courses")}>Create Courses</h1>
+            <button
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg shadow-indigo-100 active:scale-95 flex items-center gap-2 mt-4"
+              onClick={() => navigate("/courses")}
+            >
+              Manage My Courses
+            </button>
+            <button
+              className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95"
+              onClick={() => navigate("/createcourses")}
+            >
+              Create New Course
+            </button>
           </div>
         </div>
 

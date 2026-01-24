@@ -41,7 +41,12 @@ function EnrolledCourse() {
                 <h2 className="text-lg font-semibold text-gray-800">{course.title}</h2>
                 <p className="text-sm text-gray-600 mb-2">{course.category}</p>
                 <p className="text-sm text-gray-700">{course.level}</p>
-                <h1 className='px-[10px] text-center  py-[10px] border-2  bg-black border-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer mt-[10px] hover:bg-gray-600' onClick={()=>navigate(`/viewlecture/${course._id}`)}>Watch Now</h1>
+                <button 
+                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-md active:scale-95 mt-4" 
+                  onClick={() => navigate(`/viewlecture/${course._id}`)}
+                >
+                  Watch Now
+                </button>
               </div>
             </div>
           ))}

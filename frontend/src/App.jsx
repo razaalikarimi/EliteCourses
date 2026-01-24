@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
+import NewDashboard from './pages/NewDashboard'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import { ToastContainer} from 'react-toastify';
@@ -42,7 +43,8 @@ function App() {
       <ToastContainer />
       <ScrollToTop/>
       <Routes>
-        <Route path='/' element={<Home/>}/>
+        {/* Show NewDashboard for logged-in users, Home for visitors */}
+        <Route path='/' element={userData ? <NewDashboard/> : <Home/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={!userData?<SignUp/>:<Navigate to={"/"}/>}/>
         <Route path='/profile' element={userData?<Profile/>:<Navigate to={"/signup"}/>}/>
@@ -69,3 +71,4 @@ function App() {
 }
 
 export default App
+

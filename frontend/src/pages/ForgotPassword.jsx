@@ -68,22 +68,22 @@ function ForgotPassword() {
 
   return (
      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-     { step==1 && <div className="bg-white shadow-md rounded-xl p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Forgot Your Password?
+     { step==1 && <div className="bg-white shadow-xl rounded-2xl p-10 max-w-md w-full border border-gray-100">
+        <h2 className="text-3xl font-black mb-2 text-center text-gray-900 tracking-tight">
+          Forgot Password?
         </h2>
+        <p className="text-gray-500 text-center mb-8 font-medium">No worries, we'll send you reset instructions.</p>
 
-          <form  className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Enter your email address
+          <form  className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                Email Address
               </label>
               <input
                 type="email"
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[black]"
-                placeholder="you@example.com"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-gray-300"
+                placeholder="name@example.com"
                 onChange={(e)=>setEmail(e.target.value)}
-
                 value={email}
                 required
               />
@@ -91,40 +91,40 @@ function ForgotPassword() {
 
             <button
               type="submit"
-              className="w-full bg-[black] hover:bg-[#4b4b4b] text-white py-2 px-4 rounded-md font-medium cursor-pointer" disabled={loading} onClick={handleStep1}
+              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl active:scale-95 transition-all shadow-lg shadow-indigo-100 uppercase tracking-widest text-xs" 
+              disabled={loading} 
+              onClick={handleStep1}
             >
-              {loading?<ClipLoader size={30} color='white'/>:"Send OTP"}
+              {loading?<ClipLoader size={20} color='white'/>:"Send Reset OTP"}
             </button>
           </form>
         
 
-        <div className="text-sm text-center mt-4" onClick={()=>navigate("/login")} >
-        
-            Back to Login
-        
-        </div>
+        <button 
+          className="w-full text-xs text-center mt-6 font-black uppercase tracking-widest text-gray-400 hover:text-indigo-600 transition-colors" 
+          onClick={()=>navigate("/login")}
+        >
+          Back to Login
+        </button>
       </div>}
 
 
-      {step==2 && <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
-          Enter OTP
+      {step==2 && <div className="bg-white shadow-xl rounded-2xl p-10 max-w-md w-full border border-gray-100">
+        <h2 className="text-3xl font-black text-center text-gray-900 mb-2 tracking-tight">
+          Verify OTP
         </h2>
+        <p className="text-gray-500 text-center mb-8 font-medium">Check your email for the verification code.</p>
       
-
-        {/* OTP Inputs */}
-        
-          <form  className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Please enter the 4-digit code sent to your email.
+          <form  className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                4-Digit Code
               </label>
               <input
                 type="text"
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[black]"
-                placeholder="Enter Here"
+                className="w-full px-4 py-4 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center text-2xl font-black tracking-[0.5em] placeholder:text-gray-200"
+                placeholder="0000"
                 onChange={(e)=>setOtp(e.target.value)}
-
                 value={otp}
                 required
               />
@@ -132,75 +132,73 @@ function ForgotPassword() {
 
             <button
               type="submit"
-              className="w-full bg-[black] hover:bg-[#4b4b4b] text-white py-2 px-4 rounded-md font-medium cursor-pointer" disabled={loading} onClick={handleStep2} 
+              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl active:scale-95 transition-all shadow-lg shadow-indigo-100 uppercase tracking-widest text-xs" 
+              disabled={loading} 
+              onClick={handleStep2} 
             >
-              {loading?<ClipLoader size={30} color='white'/>:"Verify OTP"}
+              {loading?<ClipLoader size={20} color='white'/>:"Verify Code"}
             </button>
           </form>
         
 
-        <div className="text-sm text-center mt-4" onClick={()=>navigate("/login")} >
-        
-            Back to Login
-        
-        </div>
-       
-
-      
-
+        <button 
+          className="w-full text-xs text-center mt-6 font-black uppercase tracking-widest text-gray-400 hover:text-indigo-600 transition-colors" 
+          onClick={()=>navigate("/login")}
+        >
+          Back to Login
+        </button>
       </div>}
-      {step==3 &&   <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
-          Reset Your Password
+
+      {step==3 && <div className="bg-white shadow-xl rounded-2xl p-10 max-w-md w-full border border-gray-100">
+        <h2 className="text-3xl font-black text-center text-gray-900 mb-2 tracking-tight">
+          Reset Password
         </h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Enter a new password below to regain access to your account.
+        <p className="text-gray-500 text-center mb-8 font-medium">
+          Create a secure password for your account.
         </p>
 
-        <form className="space-y-5" onSubmit={(e)=>e.preventDefault()}>
-          {/* New Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" >
+        <form className="space-y-6" onSubmit={(e)=>e.preventDefault()}>
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1" >
               New Password
             </label>
             <input
-              type="text"
-              placeholder="Enter new password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[black] focus:outline-none" onChange={(e)=>setNewPassword(e.target.value)}
-
-                value={newpassword}
+              type="password"
+              placeholder="••••••••"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-gray-300" 
+              onChange={(e)=>setNewPassword(e.target.value)}
+              value={newpassword}
             />
           </div>
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
               Confirm Password
             </label>
             <input
-              type="text"
-              placeholder="Re-enter new password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[black] focus:outline-none" onChange={(e)=>setConpassword(e.target.value)}
-
-                value={conPassword}
+              type="password"
+              placeholder="••••••••"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-gray-300" 
+              onChange={(e)=>setConpassword(e.target.value)}
+              value={conPassword}
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[black] hover:bg-[#4b4b4b] text-white py-2 rounded-md font-medium" onClick={handleStep3}
+            className="w-full h-14 bg-gray-900 hover:bg-black text-white font-black rounded-xl active:scale-95 transition-all shadow-lg uppercase tracking-widest text-xs mt-4" 
+            onClick={handleStep3}
           >
-            {loading?<ClipLoader size={30} color='white'/>:"Reset Password"}
+            {loading?<ClipLoader size={20} color='white'/>:"Update Password"}
           </button>
         </form>
 
-        {/* Back to login */}
-        <div className="text-center text-sm mt-4" onClick={()=>navigate("/login")}>
-          
-            Back to Login
-          
-        </div>
+        <button 
+          className="w-full text-xs text-center mt-6 font-black uppercase tracking-widest text-gray-400 hover:text-indigo-600 transition-colors" 
+          onClick={()=>navigate("/login")}
+        >
+          Back to Login
+        </button>
       </div>}
     </div>
   )

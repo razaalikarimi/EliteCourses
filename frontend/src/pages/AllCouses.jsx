@@ -1,116 +1,175 @@
 import React, { useEffect, useState } from 'react';
-import Card from "../components/Card.jsx";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
-import Nav from '../components/Nav';
-import ai from '../assets/SearchAi.png'
 import { useSelector } from 'react-redux';
+import AppShell from '../components/AppShell';
+import { CompactCourseCard } from '../components/CourseCardVariants';
+import { HiFilter, HiSearch, HiX } from 'react-icons/hi';
+import ai from '../assets/SearchAi.png';
+
 function AllCourses() {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-  const navigate = useNavigate()
- const [category,setCategory] = useState([])
- const [filterCourses,setFilterCourses] = useState([])
-  const {courseData} = useSelector(state=>state.course)
+  const navigate = useNavigate();
+  const { courseData } = useSelector((state) => state.course);
+  const [category, setCategory] = useState([]);
+  const [filterCourses, setFilterCourses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
- 
-  
-  const toggleCategory = (e) =>{
-     if(category.includes(e.target.value)){
-       setCategory(prev=> prev.filter(item => item !== e.target.value))
-     }else{
-      setCategory(prev => [...prev,e.target.value])
-     }
-  }
+  const categories = [
+    'App Development',
+    'AI/ML',
+    'AI Tools',
+    'Data Science',
+    'Data Analytics',
+    'Ethical Hacking',
+    'UI UX Designing',
+    'Web Development',
+    'Others',
+  ];
 
-  const applyFilter = () =>{
+  const toggleCategory = (cat) => {
+    if (category.includes(cat)) {
+      setCategory((prev) => prev.filter((item) => item !== cat));
+    } else {
+      setCategory((prev) => [...prev, cat]);
+    }
+  };
+
+  const applyFilter = () => {
     let courseCopy = courseData.slice();
 
-    if(category.length > 0){
-      courseCopy = courseCopy.filter(item => category.includes(item.category))
+    if (category.length > 0) {
+      courseCopy = courseCopy.filter((item) => category.includes(item.category));
     }
-   
-    setFilterCourses(courseCopy)
 
-  }
+    if (searchTerm) {
+      courseCopy = courseCopy.filter((item) =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-   useEffect(()=>{
-setFilterCourses(courseData)
-  },[courseData])
+    setFilterCourses(courseCopy);
+  };
 
-  useEffect(()=>{
-    applyFilter()
-  },[category])
+  useEffect(() => {
+    setFilterCourses(courseData);
+  }, [courseData]);
+
+  useEffect(() => {
+    applyFilter();
+  }, [category, searchTerm]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Nav/>
-      {/* Toggle Button */}
-      <button
-        onClick={() => setIsSidebarVisible(prev => !prev)}
-        className="fixed top-20 left-4 z-50 bg-white text-black px-3 py-1 rounded md:hidden border-2 border-black"
-      >
-        {isSidebarVisible ? 'Hide' : 'Show'} Filters
-      </button>
+    <AppShell>
+      <div className="max-w-7xl mx-auto py-10 px-6">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Filters Sidebar */}
+          <aside className="w-full lg:w-72 flex-shrink-0">
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm sticky top-28 space-y-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <HiFilter className="text-gray-400" size={20} />
+                  <h2 className="text-lg font-bold text-gray-900">Filters</h2>
+                </div>
+                {(category.length > 0 || searchTerm) && (
+                  <button 
+                    onClick={() => { setCategory([]); setSearchTerm(''); }}
+                    className="text-xs text-indigo-600 font-bold hover:underline"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
 
-      {/* Sidebar */}
-      <aside className={`w-[260px] h-screen overflow-y-auto bg-black fixed  top-0 left-0 p-6 py-[130px] border-r border-gray-200 shadow-md transition-transform duration-300 z-5 
-        ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'} 
-        md:block md:translate-x-0`}>
-          
-        <h2 className="text-xl font-bold flex items-center justify-center gap-2 text-gray-50 mb-6"><FaArrowLeftLong className='text-white' onClick={()=>navigate("/")}/>Filter by Category</h2>
+              <div className="space-y-6">
+                {/* Search */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Search Courses</label>
+                  <div className="relative">
+                    <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="text"
+                      placeholder="Title or keywords..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:bg-white focus:border-indigo-500 transition-all outline-none"
+                    />
+                  </div>
+                </div>
 
-        <form className="space-y-4 text-sm  bg-gray-600 border-white text-[white] border  p-[20px] rounded-2xl" onSubmit={(e)=>e.preventDefault()}>
-          <button className='px-[10px] py-[10px]  bg-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer' onClick={()=>navigate("/searchwithai")}>Search with AI <img src={ai} className='w-[30px] h-[30px] rounded-full' alt="" /></button>
-          <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'App Development'} onChange={toggleCategory}/>
-              App Development
-            </label>
-          <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'AI/ML'} onChange={toggleCategory}/>
-              AI/ML
-            </label>
-            
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'AI Tools'} onChange={toggleCategory} />
-              AI Tools
-            </label>
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'Data Science'} onChange={toggleCategory}/>
-              Data Science
-            </label>
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'Data Analytics'} onChange={toggleCategory} />
-              Data Analytics
-            </label>
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'Ethical Hacking'} onChange={toggleCategory}/>
-              Ethical Hacking
-            </label>
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'UI UX Designing'} onChange={toggleCategory}/>
-              UI UX Designing
-            </label>
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'Web Development'} onChange={toggleCategory}/>
-              Web Development
-            </label>
-            <label  className="flex items-center gap-3 cursor-pointer hover:text-gray-200 transition">
-              <input type="checkbox" className="accent-black w-4 h-4 rounded-md" value={'Others'} onChange={toggleCategory} />
-              Others
-            </label>
-        </form>
-      </aside>
+                {/* Categories */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Categories</label>
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => toggleCategory(cat)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                          category.includes(cat)
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-gray-600 border-gray-100 hover:border-gray-300'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-      {/* Main Courses Section */}
-      <main className="w-full transition-all duration-300 py-[130px] md:pl-[300px]  flex items-start justify-center md:justify-start flex-wrap gap-6 px-[10px]">
-        {
-        filterCourses?.map((item,index)=>(
-          <Card key={index} thumbnail={item.thumbnail} title={item.title} price={item.price} category={item.category} id={item._id} reviews={item.reviews} />
+                {/* AI Feature */}
+                <div className="pt-4 border-t border-gray-50">
+                  <button 
+                    onClick={() => navigate("/searchwithai")}
+                    className="w-full flex items-center justify-center gap-2 p-3 bg-gray-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-gray-800 transition-all shadow-md active:scale-95"
+                  >
+                    <img src={ai} className="w-5 h-5 rounded-full ring-1 ring-white/20" alt="" />
+                    AI Assistant
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
 
-        ))
-      }
-      </main>
-    </div>
+          {/* Course Grid */}
+          <main className="flex-1 space-y-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-black text-gray-900 tracking-tight">Access Courses</h1>
+                <p className="text-gray-500 font-medium text-sm mt-1">{filterCourses.length} results found</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filterCourses.map((item) => (
+                <CompactCourseCard
+                  key={item._id}
+                  course={{
+                    ...item,
+                    id: item._id,
+                    duration: 'Self-Paced',
+                  }}
+                />
+              ))}
+            </div>
+
+            {filterCourses.length === 0 && (
+              <div className="py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100 text-center">
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                  <HiSearch className="text-gray-200" size={32} />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">No courses match your search</h3>
+                <p className="text-gray-500 text-sm mt-1 max-w-xs mx-auto">Try clearing your filters or searching for something else.</p>
+                <button 
+                  onClick={() => { setCategory([]); setSearchTerm(''); }}
+                  className="mt-6 text-indigo-600 font-bold text-sm hover:underline"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+    </AppShell>
   );
 }
 

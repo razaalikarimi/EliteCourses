@@ -123,10 +123,13 @@ function EditLecture() {
          <div>
           {loading ?<p>Uploading video... Please wait.</p>:""}
          </div>
-        {/* Submit Button */}
         <div className="pt-4">
-          <button className="w-full bg-black text-white py-3 rounded-md text-sm font-medium hover:bg-gray-700 transition" disabled={loading} onClick={editLecture}>
-            {loading?<ClipLoader size={30} color='white'/> :"Update Lecture"}
+          <button 
+            className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-indigo-100" 
+            disabled={loading} 
+            onClick={editLecture}
+          >
+            {loading ? <ClipLoader size={20} color='white'/> : "Sync Changes"}
           </button>
         </div>
       </div>
