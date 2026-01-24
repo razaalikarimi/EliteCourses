@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 import Home from "./pages/Home";
 import NewDashboard from "./pages/NewDashboard";
@@ -35,7 +35,7 @@ export const serverUrl = "https://elitecoursesb.onrender.com";
 function App() {
   const { userData } = useSelector((state) => state.user);
 
-  // preload data
+  // global data loaders
   getCurrentUser();
   getCouseData();
   getCreatorCourseData();
@@ -47,7 +47,7 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-        {/* Public */}
+        {/* Public / Home */}
         <Route path="/" element={userData ? <NewDashboard /> : <Home />} />
         <Route path="/login" element={<Login />} />
         <Route
