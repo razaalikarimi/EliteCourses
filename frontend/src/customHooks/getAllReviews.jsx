@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -14,25 +13,6 @@ const useAllReviews = () => {
         const result = await axios.get(serverUrl + "/api/review/allReview", {
           withCredentials: true,
         });
-=======
-
-import { useEffect } from "react";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { setAllReview } from "../redux/reviewSlice";
-import { serverUrl } from "../App";
-
-const useAllReviews = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const fetchAllReviews = async () => {
-      try {
-        const result = await axios.get(
-          serverUrl + "/api/review/allReview",
-          { withCredentials: true }
-        );
->>>>>>> 6a7a943fc54e9f14262178af4c8079e6c1d01555
 
         console.log("all reviews:", result.data);
         dispatch(setAllReview(result.data));
