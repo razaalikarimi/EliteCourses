@@ -3,6 +3,10 @@ import Course from "../models/courseModel.js";
 import Lecture from "../models/lectureModel.js";
 import User from "../models/userModel.js";
 
+<<<<<<< HEAD
+=======
+// create Courses
+>>>>>>> 6a7a943fc54e9f14262178af4c8079e6c1d01555
 export const createCourse = async (req, res) => {
   try {
     const { title, category } = req.body;
@@ -130,6 +134,11 @@ export const removeCourse = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+//create lecture
+
+>>>>>>> 6a7a943fc54e9f14262178af4c8079e6c1d01555
 export const createLecture = async (req, res) => {
   try {
     const { lectureTitle } = req.body;

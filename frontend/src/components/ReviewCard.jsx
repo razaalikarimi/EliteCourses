@@ -4,6 +4,7 @@ import { FaQuoteLeft } from "react-icons/fa";
 
 const ReviewCard = ({ text, name, image, rating, role }) => {
   return (
+<<<<<<< HEAD
     <div className="group bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
       <div className="flex items-center gap-1 mb-6">
         {[...Array(5)].map((_, i) => (
@@ -27,6 +28,30 @@ const ReviewCard = ({ text, name, image, rating, role }) => {
           />
           <HiCheckBadge className="absolute -bottom-1 -right-1 text-indigo-600 w-5 h-5 bg-white rounded-full p-0.5" />
         </div>
+=======
+    <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 max-w-sm w-full">
+      {/*  Rating Stars */}
+      <div className="flex items-center mb-3 text-yellow-400 text-sm">
+        {Array(5)
+          .fill(0)
+          .map((_, i) => (
+            <span key={i}>
+              {i < rating ? <FaStar/> : <FaRegStar/>}
+            </span>
+          ))}
+      </div>
+
+      {/*  Review Text */}
+      <p className="text-gray-700 text-sm mb-5">{text}</p>
+
+      {/*  Reviewer Info */}
+      <div className="flex items-center gap-3">
+        <img
+          src={image}
+          alt={name}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+>>>>>>> 6a7a943fc54e9f14262178af4c8079e6c1d01555
         <div>
           <h4 className="font-bold text-gray-900 text-sm">{name}</h4>
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{role}</p>

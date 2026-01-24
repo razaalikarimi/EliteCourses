@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // src/hooks/getCreatorCourseData.jsx
 
 import { useEffect } from "react";
@@ -15,6 +16,25 @@ const useCreatorCourseData = () => {
    
     if (!userData || !userData._id) return;
 
+=======
+
+
+import { useEffect } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { setCreatorCourseData } from "../redux/courseSlice";
+import { serverUrl } from "../App";
+
+const useCreatorCourseData = () => {
+  const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.user);
+
+  useEffect(() => {
+   
+    if (!userData || !userData._id) return;
+
+>>>>>>> 6a7a943fc54e9f14262178af4c8079e6c1d01555
     const getCreatorData = async () => {
       try {
         const result = await axios.get(

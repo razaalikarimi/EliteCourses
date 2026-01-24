@@ -8,6 +8,7 @@ const Footer = () => {
   const navigate = useNavigate();
   
   return (
+<<<<<<< HEAD
     <footer className="bg-gray-900 text-gray-300 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
@@ -90,6 +91,70 @@ const Footer = () => {
               <button className="hover:text-white transition-colors">Sitemap</button>
            </div>
         </div>
+=======
+    <footer className="bg-black text-gray-300 py-10 px-6">
+      <div className="max-w-7xl mx-auto flex lg:items-center items-start justify-center gap-[40px] lg:gap-[150px] flex-col lg:flex-row">
+        {/* Logo + Description */}
+        <div className="lg:w-[40%] md:w-[50%] w-[100%]">
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-10 mb-3 border-1 rounded-[5px]"
+          />
+          <h2 className="text-xl font-bold text-white mb-3">Elite Courses</h2>
+          <p className="text-sm">
+            AI-powered learning platform to help you grow smarter. Learn
+            anything, anytime, anywhere.
+          </p>
+        </div>
+
+        {/* Quick Links */}
+        <div className="lg:w-[30%] md:w-[100%]">
+          <h3 className="text-white font-semibold mb-2">Quick Links</h3>
+          <ul className="space-y-1 text-sm">
+            <li
+              className="hover:text-white cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              Home
+            </li>
+            <li
+              className="hover:text-white cursor-pointer"
+              onClick={() => navigate("/allcourses")}
+            >
+              Courses
+            </li>
+            <li
+              className="hover:text-white cursor-pointer"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </li>
+            <li
+              className="hover:text-white cursor-pointer"
+              onClick={() => navigate("/profile")}
+            >
+              My Profile
+            </li>
+          </ul>
+        </div>
+
+        {/* Explore Categories */}
+        <div className="lg:w-[30%] md:w-[100%]">
+          <h3 className="text-white font-semibold mb-2">Explore Categories</h3>
+          <ul className="space-y-1 text-sm">
+            <li className="hover:text-white">Web Development</li>
+            <li className="hover:text-white">AI/ML</li>
+            <li className="hover:text-white">Data Science</li>
+            <li className="hover:text-white">UI/UX Design</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-700 mt-10 pt-5 text-sm text-center text-gray-500">
+        © {new Date().getFullYear()} LearnAI. All rights reserved.
+>>>>>>> 6a7a943fc54e9f14262178af4c8079e6c1d01555
       </div>
     </footer>
   );
