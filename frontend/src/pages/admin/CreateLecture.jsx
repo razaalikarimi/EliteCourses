@@ -78,8 +78,12 @@ function CreateLecture() {
           }>
             <FaArrowLeft /> Back to Course
           </button>
-          <button className="px-5 py-2 rounded-md bg-[black] text-white hover:bg-gray-600 transition-all text-sm font-medium shadow" disabled={loading} onClick={createLectureHandler}>
-           {loading?<ClipLoader size={30} color='white'/>: "+ Create Lecture"}
+          <button 
+            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95" 
+            disabled={loading} 
+            onClick={createLectureHandler}
+          >
+            {loading ? <ClipLoader size={20} color='white'/> : "+ Add Lesson"}
           </button>
         </div>
 
