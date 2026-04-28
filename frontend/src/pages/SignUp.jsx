@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 
+import Nav from "../components/Nav";
+
 function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -64,17 +66,14 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-8 bg-white p-10 rounded-3xl border border-gray-100 shadow-sm">
-        <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <img src={logo} className="w-16 h-16 rounded-2xl shadow-lg border border-gray-100" alt="Logo" />
-          </div>
-          <div className="space-y-1">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Nav />
+      <div className="flex-1 flex items-center justify-center p-6 pt-24">
+        <div className="w-full max-w-md space-y-8 bg-white p-10 rounded-3xl border border-gray-100 shadow-sm">
+          <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-gray-900">Create an account</h1>
-            <p className="text-gray-500 font-medium">Join our community of learners</p>
+            <p className="text-gray-500 font-medium">Join our community today</p>
           </div>
-        </div>
 
         <div className="flex p-1 bg-gray-50 rounded-xl">
           <button
@@ -176,6 +175,7 @@ function SignUp() {
             Log In
           </button>
         </p>
+        </div>
       </div>
     </div>
   );

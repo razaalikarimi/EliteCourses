@@ -48,7 +48,20 @@ function App() {
 
       <Routes>
         {/* Public / Home */}
-        <Route path="/" element={userData ? <NewDashboard /> : <Home />} />
+        <Route
+          path="/"
+          element={
+            userData ? (
+              userData.role === "educator" ? (
+                <Dashboard />
+              ) : (
+                <NewDashboard />
+              )
+            ) : (
+              <Home />
+            )
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route
           path="/signup"

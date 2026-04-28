@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { HiClock, HiStar, HiPlay } from 'react-icons/hi';
 
@@ -168,7 +167,7 @@ export const TimelineCourseCard = ({ course, index }) => {
         <div className="flex items-center gap-2 mb-1.5">
           <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">{category}</span>
           <span className="w-1 h-1 bg-slate-200 rounded-full" />
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{startDate || 'Upcoming Session'}</span>
+          <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{startDate || 'Upcoming Session'}</span>
         </div>
         <h5 className="font-bold text-slate-900 line-clamp-1 text-sm group-hover:text-blue-600 transition-colors">{title}</h5>
       </div>

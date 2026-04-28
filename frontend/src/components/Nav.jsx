@@ -4,16 +4,18 @@ import { IoMdPerson } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { GiSplitCross } from "react-icons/gi";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { serverUrl } from "../App";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
+
 function Nav() {
   let [showHam, setShowHam] = useState(false);
   let [showPro, setShowPro] = useState(false);
   let navigate = useNavigate();
+  let location = useLocation();
   let dispatch = useDispatch();
   let { userData } = useSelector((state) => state.user);
 
@@ -29,6 +31,10 @@ function Nav() {
       console.log(error.response.data.message);
     }
   };
+  
+  const isLoginPage = location.pathname === "/login";
+  const isSignUpPage = location.pathname === "/signup";
+
   return (
     <nav className="w-full h-[72px] fixed top-0 left-0 flex items-center justify-between px-6 md:px-12 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/60 z-50">
       <div className="flex items-center gap-8">
@@ -59,18 +65,22 @@ function Nav() {
       <div className="flex items-center gap-4">
         {!userData ? (
           <div className="flex items-center gap-3">
-            <button
-              className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2"
-              onClick={() => navigate("/login")}
-            >
-              Log in
-            </button>
-            <button
-              className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
-              onClick={() => navigate("/signup")}
-            >
-              Get Started
-            </button>
+            {!isLoginPage && (
+              <button
+                className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2"
+                onClick={() => navigate("/login")}
+              >
+                Log in
+              </button>
+            )}
+            {!isSignUpPage && (
+              <button
+                className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+                onClick={() => navigate("/signup")}
+              >
+                Get Started
+              </button>
+            )}
           </div>
         ) : (
           <div className="relative">

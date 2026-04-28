@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -65,10 +64,8 @@ const AppShell = ({ children }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex overflow-hidden font-inter">
       {/* Side Navigation */}
-      <motion.aside
-        initial={false}
-        animate={{ width: sidebarCollapsed ? 80 : 260 }}
-        className="fixed left-0 top-0 h-screen bg-white border-r border-slate-200 z-40 flex flex-col shadow-[1px_0_10px_rgba(0,0,0,0.02)]"
+      <aside
+        className={`fixed left-0 top-0 h-screen bg-white border-r border-slate-200 z-40 flex flex-col shadow-[1px_0_10px_rgba(0,0,0,0.02)] transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-[260px]'}`}
       >
         {/* Logo Section */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-slate-50">
@@ -142,7 +139,7 @@ const AppShell = ({ children }) => {
             {!sidebarCollapsed && <span>Logout</span>}
           </button>
         </div>
-      </motion.aside>
+      </aside>
 
       {/* Main Content Area */}
       <div
@@ -181,49 +178,40 @@ const AppShell = ({ children }) => {
         </main>
       </div>
 
-      {/* Command Palette */}
-      <AnimatePresence>
-        {showCommandPalette && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowCommandPalette(false)}
-              className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 px-4"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98, y: -10 }}
-              className="fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-2xl bg-white rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
-            >
-              <div className="p-5 border-b border-slate-50">
-                <input
-                  type="text"
-                  placeholder="Go to page..."
-                  className="w-full px-4 py-3 bg-slate-50 rounded-2xl border-none outline-none text-slate-900 font-bold placeholder-slate-400 text-lg"
-                  autoFocus
-                />
-              </div>
-              <div className="p-3 max-h-[400px] overflow-y-auto space-y-1">
-                {navItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => { navigate(item.path); setShowCommandPalette(false); }}
-                    className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-slate-50 transition-colors text-left group"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all">
-                      <item.icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-slate-600 font-bold group-hover:text-slate-900">{item.label}</span>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {showCommandPalette && (
+        <>
+          <div
+            onClick={() => setShowCommandPalette(false)}
+            className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 px-4"
+          />
+          <div
+            className="fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-2xl bg-white rounded-3xl shadow-2xl z-50 overflow-hidden border border-slate-100"
+          >
+            <div className="p-5 border-b border-slate-50">
+              <input
+                type="text"
+                placeholder="Go to page..."
+                className="w-full px-4 py-3 bg-slate-50 rounded-2xl border-none outline-none text-slate-900 font-bold placeholder-slate-400 text-lg"
+                autoFocus
+              />
+            </div>
+            <div className="p-3 max-h-[400px] overflow-y-auto space-y-1">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => { navigate(item.path); setShowCommandPalette(false); }}
+                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-slate-50 transition-colors text-left group"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all">
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-slate-600 font-bold group-hover:text-slate-900">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
