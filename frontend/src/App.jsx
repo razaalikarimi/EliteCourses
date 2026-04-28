@@ -96,7 +96,7 @@ function App() {
         />
         <Route
           path="/searchwithai"
-          element={userData ? <SearchWithAi /> : <Navigate to="/signup" />}
+          element={<SearchWithAi />}
         />
 
         {/* Educator Protected */}
