@@ -7,126 +7,127 @@ import { toast } from 'react-toastify'
 import { ClipLoader } from 'react-spinners'
 import { useNavigate } from 'react-router-dom'
 import { FaArrowLeftLong } from "react-icons/fa6";
+import Nav from '../components/Nav';
 
 function EditProfile() {
-     let {userData} = useSelector(state=>state.user)
-     let [name,setName] = useState(userData.name || "")
-     let [description,setDescription] = useState(userData.description || "")
-     let [photoUrl,setPhotoUrl] = useState(null)
-     let dispatch = useDispatch()
-     let [loading,setLoading] = useState(false)
-     let navigate = useNavigate()
+  const { userData } = useSelector(state => state.user)
+  const [name, setName] = useState(userData?.name || "")
+  const [description, setDescription] = useState(userData?.description || "")
+  const [photoUrl, setPhotoUrl] = useState(null)
+  const [loading, setLoading] = useState(false)
+  
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-      const formData = new FormData()
-      formData.append("name",name)
-      formData.append("description",description)
-      formData.append("photoUrl",photoUrl)
+  if (!userData) return null;
 
+  const updateProfile = async (e) => {
+    e.preventDefault();
+    setLoading(true)
+    const formData = new FormData()
+    formData.append("name", name)
+    formData.append("description", description)
+    if (photoUrl) formData.append("photoUrl", photoUrl)
 
+    try {
+      const result = await axios.post(serverUrl + "/api/user/updateprofile", formData, { withCredentials: true })
+      dispatch(setUserData(result.data))
+      toast.success("Profile updated successfully")
+      navigate("/profile")
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update profile")
+    } finally {
+      setLoading(false)
+    }
+  }
 
-     const updateProfile = async () => {
-      setLoading(true)
-      try {
-        const result = await axios.post(serverUrl + "/api/user/updateprofile" ,formData , {withCredentials:true} )
-        console.log(result.data)
-        dispatch(setUserData(result.data))
-        navigate("/")
-        setLoading(false)
-      
-        toast.success("Profile Update Successfully")
-        
-
-        
-      } catch (error) {
-        console.log(error)
-        toast.error("Profile Update Error")
-        setLoading(false)
-      }
-      
-     }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-10">
-      <div className="bg-white rounded-2xl shadow-lg p-8 max-w-xl w-full relative">
-        <FaArrowLeftLong  className='absolute top-[5%] left-[5%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/profile")}/>
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Edit Profile</h2>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Nav />
+      <main className="flex-1 max-w-2xl mx-auto w-full pt-32 pb-20 px-6">
+        <button 
+          onClick={() => navigate("/profile")}
+          className="mb-8 flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors font-medium text-sm"
+        >
+          <FaArrowLeftLong /> Back to profile
+        </button>
 
-        <form  className="space-y-5" onSubmit={(e)=>e.preventDefault()}>
-          {/* Profile Photo */}
-          
-           <div className="flex flex-col items-center text-center">
-          {userData.photoUrl ? <img
-            src={userData?.photoUrl}
-            alt=""
-            className="w-24 h-24 rounded-full object-cover border-4 border-[black]"
-          /> : <div className='w-24 h-24 rounded-full text-white flex items-center justify-center text-[30px] border-2 bg-black  border-white cursor-pointer'>
-         {userData?.name.slice(0,1).toUpperCase()}
-          </div>}
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700">Select Avatar</label>
-            <input
-              type="file"
-              name="photoUrl"
-            
-              placeholder="Photo URL"
-              className="w-full px-4 py-2 border rounded-md text-sm "
-              onChange={(e)=>setPhotoUrl(e.target.files[0])}
-            />
+        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden p-8 md:p-12 space-y-10">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold text-gray-900">Edit Profile</h1>
+            <p className="text-gray-500 font-medium">Update your personal information and avatar</p>
           </div>
 
-          {/* Name */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[black] placeholder:text-black"
-              placeholder={userData.name}
-              onChange={(e)=>setName(e.target.value)}
-              value={name}
-            />
-          </div>
+          <form className="space-y-8" onSubmit={updateProfile}>
+            <div className="flex flex-col items-center gap-6">
+              <div className="relative group">
+                {userData.photoUrl ? (
+                  <img
+                    src={userData.photoUrl}
+                    alt={userData.name}
+                    className="w-32 h-32 rounded-3xl object-cover border-4 border-white shadow-lg"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-3xl bg-gray-900 text-white flex items-center justify-center text-4xl font-bold border-4 border-white shadow-lg">
+                    {userData.name?.slice(0, 1).toUpperCase()}
+                  </div>
+                )}
+                <label className="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-sm font-bold">
+                  Change
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => setPhotoUrl(e.target.files[0])}
+                  />
+                </label>
+              </div>
+              {photoUrl && <p className="text-xs text-blue-600 font-bold">Selected: {photoUrl.name}</p>}
+            </div>
 
-          {/* Email (read-only) */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              
-              readOnly
-              className="w-full mt-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-600 placeholder:text-black"
-              placeholder={userData.email}
-            />
-          </div>
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <label className="text-sm font-bold text-gray-700 ml-1">Full Name</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 transition-all font-medium"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
 
-         
+              <div className="space-y-1">
+                <label className="text-sm font-bold text-gray-700 ml-1">Email</label>
+                <input
+                  type="email"
+                  readOnly
+                  className="w-full px-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-400 font-medium cursor-not-allowed"
+                  value={userData.email}
+                />
+              </div>
 
-          {/* Description */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Description</label>
-            <textarea
-              name="description"
-             
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-[black]"
-              rows={3}
-              placeholder="Tell us about yourself"
-              onChange={(e)=>setDescription(e.target.value)}
-              value={description}
-            />
-          </div>
+              <div className="space-y-1">
+                <label className="text-sm font-bold text-gray-700 ml-1">About Me</label>
+                <textarea
+                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 transition-all font-medium min-h-[120px] resize-none"
+                  value={description}
+                  placeholder="Tell us about yourself..."
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+            </div>
 
-          {/* Save Button */}
-          <button
-            type="submit"
-            className="w-full bg-[black] active:bg-[#454545] text-white py-2 rounded-md font-medium transition cursor-pointer" disabled={loading} onClick={updateProfile}
-          >
-            {loading ? <ClipLoader size={30} color='white'/> : "Save Changes"}
-          </button>
-        </form>
-      </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-all shadow-lg shadow-gray-100 flex items-center justify-center"
+            >
+              {loading ? <ClipLoader size={20} color="white" /> : "Save Changes"}
+            </button>
+          </form>
+        </div>
+      </main>
     </div>
   )
 }
 
-export default EditProfile
+export default EditProfile;

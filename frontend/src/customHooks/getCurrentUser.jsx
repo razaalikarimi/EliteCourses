@@ -1,24 +1,37 @@
-import { useEffect } from "react"
-import { serverUrl } from "../App"
-import axios from "axios"
-import { useDispatch, useSelector } from "react-redux"
-import { setUserData } from "../redux/userSlice"
-const getCurrentUser = ()=>{
-    let dispatch = useDispatch()
-   
-    useEffect(()=>{
-        const fetchUser = async () => {
-            try {
-                let result = await axios.get(serverUrl + "/api/user/currentuser" , {withCredentials:true})
-                dispatch(setUserData(result.data))
+// src/hooks/getCurrentUser.jsx  (ya jaha bhi file rakhi hai)
 
-            } catch (error) {
-                console.log(error)
-                dispatch(setUserData(null))
-            }
-        }
-        fetchUser()
-    },[])
-}
+import { useEffect } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
+import { serverUrl } from "../App";
 
-export default getCurrentUser
+const useCurrentUser = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const result = await axios.get(serverUrl + "/api/user/currentuser", {
+          withCredentials: true,
+        });
+
+        console.log("currentuser result:", result.data);
+
+        // Agar backend { user: {...} } bhej raha hai:
+        dispatch(setUserData(result.data.user || result.data));
+      } catch (error) {
+        console.log("currentuser error:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+        dispatch(setUserData(null));
+      }
+    };
+
+    fetchUser();
+  }, [dispatch]);
+};
+
+export default useCurrentUser;

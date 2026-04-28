@@ -9,55 +9,55 @@ import { SiGoogledataproc } from "react-icons/si";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { SiOpenaigym } from "react-icons/si";
 import { useNavigate } from 'react-router-dom';
+
 function ExploreCourses() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  
+  const categories = [
+    { name: "Web Development", icon: TbDeviceDesktopAnalytics, color: "text-blue-600", bg: "bg-blue-50" },
+    { name: "UI/UX Design", icon: LiaUikit, color: "text-purple-600", bg: "bg-purple-50" },
+    { name: "App Development", icon: MdAppShortcut, color: "text-green-600", bg: "bg-green-50" },
+    { name: "Ethical Hacking", icon: FaHackerrank, color: "text-red-600", bg: "bg-red-50" },
+    { name: "AI/ML", icon: TbBrandOpenai, color: "text-orange-600", bg: "bg-orange-50" },
+    { name: "Data Science", icon: SiGoogledataproc, color: "text-cyan-600", bg: "bg-cyan-50" },
+    { name: "Data Analytics", icon: BsClipboardDataFill, color: "text-indigo-600", bg: "bg-indigo-50" },
+    { name: "AI Tools", icon: SiOpenaigym, color: "text-emerald-600", bg: "bg-emerald-50" },
+  ];
+
   return (
-    <div className='w-[100vw] min-h-[50vh] lg:h-[50vh] flex flex-col lg:flex-row items-center justify-center gap-4 px-[30px]'>
-        <div className='w-[100%] lg:w-[350px] lg:h-[100%] h-[400px]  flex flex-col items-start justify-center gap-1 md:px-[40px]  px-[20px]'>
-          <span className='text-[35px] font-semibold'>Explore</span>
-          <span className='text-[35px] font-semibold'>Our Courses</span>
-          <p className='text-[17px]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem vel iure explicabo laboriosam accusantium expedita laudantium facere magnam.</p>
-          <button className='px-[20px] py-[10px] border-2 bg-[black] border-white text-white rounded-[10px] text-[18px] font-light flex gap-2 mt-[40px]' onClick={()=>navigate("/allcourses")}>Explore Courses <SiViaplay className='w-[30px] h-[30px] fill-white' /></button>
+    <div className="flex flex-col lg:flex-row items-center gap-12 px-6 md:px-12 py-4">
+      <div className="lg:w-1/3 space-y-6">
+        <h2 className="text-3xl font-bold text-gray-900 leading-tight">
+          Explore by <br /> Category
+        </h2>
+        <p className="text-gray-600 text-lg">
+          We offer practical courses in high-demand fields. Choose what you want to learn today.
+        </p>
+        <button 
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+          onClick={() => navigate("/allcourses")}
+        >
+          View all categories
+          <SiViaplay size={20} />
+        </button>
+      </div>
 
-        </div>
-        <div className='w-[720px] max-w-[90%] lg:h-[300px] md:min-h-[300px] flex items-center justify-center lg:gap-[60px] gap-[50px] flex-wrap mb-[50px] lg:mb-[0px]'>
-          <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center '>
-            <div className='w-[100px] h-[90px] bg-[#fbd9fb] rounded-lg flex items-center justify-center '><TbDeviceDesktopAnalytics className='w-[60px] h-[60px] text-[#6d6c6c]' /></div>
-            Web Devlopment
+      <div className="lg:w-2/3 grid grid-cols-2 sm:grid-cols-4 gap-6">
+        {categories.map((cat, i) => (
+          <div 
+            key={i}
+            className="flex flex-col items-center gap-4 p-6 rounded-2xl border border-gray-100 hover:border-blue-100 hover:shadow-lg hover:shadow-blue-50 transition-all cursor-pointer bg-white group"
+            onClick={() => navigate("/allcourses")}
+          >
+            <div className={`w-14 h-14 ${cat.bg} rounded-xl flex items-center justify-center transition-transform group-hover:scale-110`}>
+              <cat.icon size={28} className={cat.color} />
             </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center '>
-            <div className='w-[100px] h-[90px] bg-[#d9fbe0] rounded-lg flex items-center justify-center '><LiaUikit className='w-[60px] h-[60px] text-[#6d6c6c]' /></div>
-            UI UX Designing
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#fcb9c8] rounded-lg flex items-center justify-center '><MdAppShortcut className='w-[50px] h-[50px] text-[#6d6c6c]' /></div>
-            App Devlopment
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#fbd9fb] rounded-lg flex items-center justify-center '><FaHackerrank className='w-[55px] h-[55px] text-[#6d6c6c]' /></div>
-            Ethical Hacking
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#d9fbe0] rounded-lg flex items-center justify-center '><TbBrandOpenai className='w-[55px] h-[55px] text-[#6d6c6c]' /></div>
-            AI/ML
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#fcb9c8] rounded-lg flex items-center justify-center '><SiGoogledataproc className='w-[45px] h-[45px] text-[#6d6c6c]' /></div>
-            Data Science
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center '>
-            <div className='w-[100px] h-[90px] bg-[#fbd9fb] rounded-lg flex items-center justify-center '><BsClipboardDataFill className='w-[50px] h-[50px] text-[#6d6c6c]' /></div>
-            Data Analytics
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#d9fbe0] rounded-lg flex items-center justify-center '><SiOpenaigym className='w-[50px] h-[50px] text-[#6d6c6c]' /></div>
-            AI Tools
-            </div>
-        </div>
-
-      
+            <span className="text-sm font-semibold text-gray-700 text-center">{cat.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default ExploreCourses
+export default ExploreCourses;

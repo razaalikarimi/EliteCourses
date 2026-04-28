@@ -7,26 +7,24 @@ import { serverUrl } from '../App';
 import { useNavigate } from 'react-router-dom';
 import start from "../assets/start.mp3"
 import { FaArrowLeftLong } from "react-icons/fa6";
+import Nav from '../components/Nav';
+
 function SearchWithAi() {
   const [input, setInput] = useState('');
   const [recommendations, setRecommendations] = useState([]);
-  const [listening,setListening] = useState(false)
+  const [listening, setListening] = useState(false)
   const navigate = useNavigate();
   const startSound = new Audio(start)
+
   function speak(message) {
     let utterance = new SpeechSynthesisUtterance(message);
     window.speechSynthesis.speak(utterance);
   }
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-
-  if (!recognition) {
-    console.log("Speech recognition not supported");
-  }
+  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
   const handleSearch = async () => {
-
     if (!recognition) return;
     setListening(true)
     startSound.play()
@@ -36,93 +34,117 @@ function SearchWithAi() {
       setInput(transcript);
       await handleRecommendation(transcript);
     };
-  
-      
-    
   };
 
   const handleRecommendation = async (query) => {
+    if (!query) return;
     try {
       const result = await axios.post(`${serverUrl}/api/ai/search`, { input: query }, { withCredentials: true });
       setRecommendations(result.data);
-      if(result.data.length>0){
- speak("These are the top courses I found for you")
-      }else{
-         speak("No courses found")
+      if(result.data.length > 0){
+        speak("These are the top courses I found for you")
+      } else {
+        speak("No courses found")
       }
-     
       setListening(false)
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setListening(false)
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-gray-900 text-white flex flex-col items-center px-4 py-16">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Nav />
       
-      {/* Search Container */}
-      <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 w-full max-w-2xl text-center relative">
-        <FaArrowLeftLong  className='text-[black] w-[22px] h-[22px] cursor-pointer absolute' onClick={()=>navigate("/")}/>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-600 mb-6 flex items-center justify-center gap-2">
-          <img src={ai} className='w-8 h-8 sm:w-[30px] sm:h-[30px]' alt="AI" />
-          Search with <span className='text-[#CB99C7]'>AI</span>
-        </h1>
-
-        <div className="flex items-center bg-gray-700 rounded-full overflow-hidden shadow-lg relative w-full ">
-          
-          <input
-            type="text"
-            className="flex-grow px-4 py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
-            placeholder="What do you want to learn? (e.g. AI, MERN, Cloud...)"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          
-          
-          {input && (
-            <button
-              onClick={() => handleRecommendation(input)}
-              className="absolute right-14 sm:right-16 bg-white rounded-full"
+      <main className="flex-1 max-w-4xl mx-auto w-full pt-32 pb-20 px-6">
+        <div className="space-y-12">
+          <div className="text-center space-y-4">
+            <button 
+              onClick={() => navigate("/")}
+              className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors font-medium text-sm mb-4"
             >
-              <img src={ai} className='w-10 h-10 p-2 rounded-full' alt="Search" />
+              <FaArrowLeftLong /> Back to home
             </button>
+            <div className="flex items-center justify-center gap-4">
+              <div className="p-3 bg-blue-50 rounded-2xl shadow-sm">
+                <img src={ai} className="w-8 h-8" alt="AI" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black text-gray-900">
+                Search with <span className="text-blue-600">AI</span>
+              </h1>
+            </div>
+            <p className="text-gray-500 font-medium max-w-lg mx-auto">
+              Our intelligent assistant helps you find exactly what you need. Just type or use your voice to search our catalog.
+            </p>
+          </div>
+
+          <div className="bg-white p-2 rounded-3xl border border-gray-100 shadow-xl shadow-blue-50/50 flex items-center gap-2">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                className="w-full pl-6 pr-4 py-5 bg-transparent border-0 focus:ring-0 text-gray-900 font-medium placeholder-gray-400"
+                placeholder="What do you want to learn? (e.g. AI, MERN, Cloud...)"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleRecommendation(input)}
+              />
+            </div>
+            <div className="flex items-center gap-2 pr-2">
+              <button
+                onClick={handleSearch}
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+                  listening ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <RiMicAiFill size={24} />
+              </button>
+              <button
+                disabled={!input}
+                onClick={() => handleRecommendation(input)}
+                className="px-8 h-14 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50 disabled:shadow-none"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          {listening && (
+            <div className="text-center animate-bounce">
+              <p className="text-blue-600 font-bold">Listening...</p>
+            </div>
           )}
 
-          <button
-            className="absolute right-2 bg-white rounded-full w-10 h-10 flex items-center justify-center"
-            onClick={handleSearch}
-          >
-            <RiMicAiFill className="w-5 h-5 text-[#cb87c5]" />
-          </button>
-        </div>
-      </div>
-
-      {/* Recommendations */}
-      {recommendations.length > 0 ? (
-        <div className="w-full max-w-6xl mt-12 px-2 sm:px-4">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-white text-center flex items-center justify-center gap-3">
-            <img src={ai1} className="w-10 h-10 sm:w-[60px] sm:h-[60px] p-2 rounded-full" alt="AI Results" />
-            AI Search Results 
-          </h2>
-       
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-            {recommendations.map((course, index) => (
-              <div
-                key={index}
-                className="bg-white text-black p-5 rounded-2xl shadow-md hover:shadow-indigo-500/30 transition-all duration-200 border border-gray-200 cursor-pointer hover:bg-gray-200"
-                onClick={() => navigate(`/viewcourse/${course._id}`)}
-              >
-                <h3 className="text-lg font-bold sm:text-xl">{course.title}</h3>
-                <p className="text-sm text-gray-600 mt-1">{course.category}</p>
+          {recommendations.length > 0 && (
+            <div className="space-y-8 pt-8">
+              <div className="flex items-center gap-3">
+                <img src={ai1} className="w-10 h-10 rounded-full" alt="AI" />
+                <h2 className="text-xl font-bold text-gray-900">AI Recommendations</h2>
               </div>
-            ))}
-          </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {recommendations.map((course, index) => (
+                  <div
+                    key={index}
+                    className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50 transition-all cursor-pointer group"
+                    onClick={() => navigate(`/viewcourse/${course._id}`)}
+                  >
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{course.category}</span>
+                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 font-medium line-clamp-2">
+                        {course.subTitle || "A comprehensive course designed by experts to help you master this field."}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      ) : (
-        listening? <h1 className='text-center text-xl sm:text-2xl mt-10 text-gray-400'>Listening...</h1>:<h1 className='text-center text-xl sm:text-2xl mt-10 text-gray-400'>No Courses Found</h1>
-       
-      )}
+      </main>
     </div>
   );
 }

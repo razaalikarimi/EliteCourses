@@ -1,47 +1,50 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-const CourseCard = ({ thumbnail, title, category, price ,id , reviews }) => {
-  const navigate = useNavigate()
-   const calculateAverageRating = (reviews) => {
-  if (!reviews || reviews.length === 0) return 0;
 
-  const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-  return (total / reviews.length).toFixed(1); // rounded to 1 decimal
-};
+const CourseCard = ({ thumbnail, title, category, price, id, reviews }) => {
+  const navigate = useNavigate();
+  
+  const calculateAverageRating = (reviews) => {
+    if (!reviews || reviews.length === 0) return 0;
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (total / reviews.length).toFixed(1);
+  };
 
-// Usage:
-const avgRating = calculateAverageRating(reviews);
-console.log("Average Rating:", avgRating);
+  const avgRating = calculateAverageRating(reviews);
+
   return (
-    <div className="max-w-sm w-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300" onClick={()=>navigate(`/viewcourse/${id}`)}>
-      {/* Thumbnail */}
-      <img
-        src={thumbnail}
-        alt={title}
-        className="w-full h-48 object-cover"
-      />
-
-      {/* Content */}
-      <div className="p-5 space-y-2">
-        {/* Title */}
-        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-
-        {/* Category */}
-        <span className="px-2 py-0.5 bg-gray-100 rounded-full text-gray-700 capitalize">
+    <div 
+      className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-300 cursor-pointer flex flex-col h-full"
+      onClick={() => navigate(`/viewcourse/${id}`)}
+    >
+      <div className="aspect-video overflow-hidden bg-gray-100 relative">
+        <img
+          src={thumbnail}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute top-3 left-3">
+          <span className="px-2.5 py-1 bg-white/90 backdrop-blur text-xs font-bold text-gray-900 rounded-lg shadow-sm uppercase tracking-wider">
             {category}
           </span>
-        
+        </div>
+      </div>
 
-        {/* Meta info */}
-        <div className="flex justify-between text-sm text-gray-600 mt-3 px-[10px]">
-          
-          <span className="font-semibold text-gray-800">₹{price}</span>
-         
-           <span className="flex items-center gap-1 ">
-            <FaStar className="text-yellow-500" /> {avgRating}
-          </span>
-          
+      <div className="p-5 flex flex-col flex-grow">
+        <h3 className="text-lg font-bold text-gray-900 line-clamp-2 leading-snug mb-4 group-hover:text-blue-600 transition-colors">
+          {title}
+        </h3>
+        
+        <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
+          <div className="flex items-center gap-1.5">
+            <FaStar className="text-yellow-400" size={14} />
+            <span className="text-sm font-bold text-gray-700">{avgRating}</span>
+            <span className="text-xs text-gray-400 font-medium">({reviews?.length || 0})</span>
+          </div>
+          <div className="text-xl font-black text-gray-900">
+            ₹{price}
+          </div>
         </div>
       </div>
     </div>

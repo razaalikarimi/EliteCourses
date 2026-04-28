@@ -20,7 +20,7 @@ export const signUp=async (req,res)=>{
             return res.status(400).json({message:"Please enter valid Email"})
         }
         if(password.length < 8){
-            return res.status(400).json({message:"Please enter a Strong Password"})
+            return res.status(400).json({message:"Password must be at least 8 characters long"})
         }
         
         let hashPassword = await bcrypt.hash(password,10)
@@ -159,6 +159,10 @@ export const resetPassword = async (req,res) => {
          const user = await User.findOne({email})
         if(!user || !user.isOtpVerifed ){
             return res.status(404).json({message:"OTP verfication required"})
+        }
+
+        if(password.length < 8){
+            return res.status(400).json({message:"Password must be at least 8 characters long"})
         }
 
         const hashPassword = await bcrypt.hash(password,10)
