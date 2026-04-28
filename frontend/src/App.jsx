@@ -80,11 +80,11 @@ function App() {
         />
         <Route
           path="/allcourses"
-          element={userData ? <AllCouses /> : <Navigate to="/signup" />}
+          element={<AllCouses />}
         />
         <Route
           path="/viewcourse/:courseId"
-          element={userData ? <ViewCourse /> : <Navigate to="/signup" />}
+          element={<ViewCourse />}
         />
         <Route
           path="/enrolledcourses"
