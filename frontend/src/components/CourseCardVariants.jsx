@@ -5,7 +5,8 @@ import { HiClock, HiStar, HiPlay } from 'react-icons/hi';
 // Premium Course Card - Large, prominent display
 export const FeaturedCourseCard = ({ course }) => {
   const navigate = useNavigate();
-  const { thumbnail, title, category, price, id, reviews } = course;
+  const { thumbnail, title, category, price, reviews } = course;
+  const id = course._id || course.id;
 
   const avgRating =
     reviews?.length > 0
@@ -55,7 +56,8 @@ export const FeaturedCourseCard = ({ course }) => {
 // Compact Course Card - Small, efficient display
 export const CompactCourseCard = ({ course }) => {
   const navigate = useNavigate();
-  const { thumbnail, title, category, price, id, duration } = course;
+  const { thumbnail, title, category, price, duration } = course;
+  const id = course._id || course.id;
 
   return (
     <div
@@ -95,7 +97,8 @@ export const CompactCourseCard = ({ course }) => {
 // Progress Course Card - For enrolled courses with progress
 export const ProgressCourseCard = ({ course, progress = 0 }) => {
   const navigate = useNavigate();
-  const { thumbnail, title, category, id, totalLectures = 12, completedLectures = 0 } = course;
+  const { thumbnail, title, category, totalLectures = 12, completedLectures = 0 } = course;
+  const id = course._id || course.id;
 
   const progressPercent = totalLectures
     ? Math.round((completedLectures / totalLectures) * 100)
@@ -153,7 +156,8 @@ export const ProgressCourseCard = ({ course, progress = 0 }) => {
 // Timeline Course Card - Horizontal layout
 export const TimelineCourseCard = ({ course, index }) => {
   const navigate = useNavigate();
-  const { thumbnail, title, category, id, startDate } = course;
+  const { thumbnail, title, category, startDate } = course;
+  const id = course._id || course.id;
 
   return (
     <div
