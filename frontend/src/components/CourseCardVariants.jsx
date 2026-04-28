@@ -6,54 +6,50 @@ import { HiClock, HiStar, HiPlay } from 'react-icons/hi';
 // Premium Course Card - Large, prominent display
 export const FeaturedCourseCard = ({ course }) => {
   const navigate = useNavigate();
-  const { thumbnail, title, category, price, id, reviews, instructor } = course;
+  const { thumbnail, title, category, price, id, reviews } = course;
 
   const avgRating =
     reviews?.length > 0
       ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-      : 0;
+      : "5.0";
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
+    <div
       onClick={() => navigate(`/viewcourse/${id}`)}
-      className="col-span-2 group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 relative border border-gray-100"
+      className="col-span-1 lg:col-span-2 group cursor-pointer bg-white rounded-3xl overflow-hidden border border-slate-100 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-500"
     >
-      <div className="relative h-64 sm:h-80 overflow-hidden">
+      <div className="relative aspect-[21/9] overflow-hidden">
         <img
           src={thumbnail}
           alt={title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute top-4 right-4 px-3 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg">
-          Premium
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 bg-white/20 backdrop-blur-md rounded text-white text-[10px] font-black uppercase tracking-wider">
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-8">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="px-2.5 py-1 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">
               {category}
             </span>
-            <div className="flex items-center gap-1 text-white text-xs font-bold">
+            <div className="flex items-center gap-1.5 text-white text-xs font-bold">
               <HiStar className="w-4 h-4 text-amber-400" />
               <span>{avgRating}</span>
             </div>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-white line-clamp-2 leading-tight">
+          <h3 className="text-2xl md:text-3xl font-black text-white line-clamp-2 leading-tight tracking-tight">
             {title}
           </h3>
         </div>
       </div>
-      <div className="p-6 flex items-center justify-between">
-        <div className="flex flex-col">
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Price</span>
-            <span className="text-2xl font-black text-gray-900 leading-tight">₹{price}</span>
+      <div className="p-8 flex items-center justify-between bg-white">
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Enrollment Fee</span>
+          <p className="text-2xl font-black text-slate-900">₹{price}</p>
         </div>
-        <button className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all">
-          Enroll Now
+        <button className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg shadow-slate-100">
+          Start Learning
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -63,57 +59,53 @@ export const CompactCourseCard = ({ course }) => {
   const { thumbnail, title, category, price, id, duration } = course;
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
+    <div
       onClick={() => navigate(`/viewcourse/${id}`)}
-      className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-indigo-400"
+      className="group cursor-pointer bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-100 hover:shadow-lg hover:shadow-blue-50 transition-all duration-300"
     >
-      <div className="flex gap-4 p-4">
-        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 border border-gray-50 bg-gray-50">
+      <div className="flex gap-4">
+        <div className="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-50 border border-slate-50">
           <img
             src={thumbnail}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         </div>
-        <div className="flex-1 min-w-0 flex flex-col justify-between">
+        <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
           <div>
-            <span className="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[9px] font-black uppercase tracking-wider mb-1">
+            <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1.5 block">
               {category}
             </span>
-            <h4 className="font-bold text-gray-900 line-clamp-2 leading-tight text-sm group-hover:text-indigo-600 transition-colors">
+            <h4 className="font-bold text-slate-900 line-clamp-2 leading-tight text-sm group-hover:text-blue-600 transition-colors">
               {title}
             </h4>
           </div>
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-base font-black text-gray-900">
-              ₹{price}
-            </span>
-            <div className="flex items-center gap-1 text-gray-400 text-[9px] font-bold uppercase tracking-tight">
-              <HiClock className="w-3 h-3" />
-              <span>{duration || 'Self-Paced'}</span>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-black text-slate-900">₹{price}</span>
+            <div className="flex items-center gap-1 text-slate-400 text-[9px] font-bold uppercase tracking-tight">
+              <HiClock className="w-3.5 h-3.5" />
+              <span>{duration || '4.5h'}</span>
             </div>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
 // Progress Course Card - For enrolled courses with progress
 export const ProgressCourseCard = ({ course, progress = 0 }) => {
   const navigate = useNavigate();
-  const { thumbnail, title, category, id, totalLectures, completedLectures = 0 } = course;
+  const { thumbnail, title, category, id, totalLectures = 12, completedLectures = 0 } = course;
 
   const progressPercent = totalLectures
     ? Math.round((completedLectures / totalLectures) * 100)
     : progress;
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
+    <div
       onClick={() => navigate(`/viewlecture/${id}`)}
-      className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+      className="group cursor-pointer bg-white rounded-3xl overflow-hidden border border-slate-100 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-500"
     >
       <div className="relative aspect-video overflow-hidden">
         <img
@@ -121,43 +113,41 @@ export const ProgressCourseCard = ({ course, progress = 0 }) => {
           alt={title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-           <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-indigo-600 opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300">
+        <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/40 transition-colors flex items-center justify-center">
+           <div className="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-xl">
               <HiPlay size={24} />
            </div>
         </div>
-        <div className="absolute top-3 left-3">
-          <span className="px-2 py-0.5 bg-white/90 backdrop-blur-sm rounded text-[9px] font-black uppercase tracking-wider text-gray-900 shadow-sm">
+        <div className="absolute top-4 left-4">
+          <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-900 shadow-sm">
             {category}
           </span>
         </div>
       </div>
-      <div className="p-5 space-y-5">
-        <h4 className="font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-indigo-600 transition-colors h-10">
+      <div className="p-6 space-y-6">
+        <h4 className="font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors h-10 tracking-tight">
           {title}
         </h4>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-            <span className="text-gray-400">Completion</span>
-            <span className="text-indigo-600">{progressPercent}%</span>
+            <span className="text-slate-400">Progress</span>
+            <span className="text-blue-600 font-black">{progressPercent}%</span>
           </div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 1 }}
-              className="h-full bg-indigo-600 rounded-full"
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              style={{ width: `${progressPercent}%` }}
+              className="h-full bg-blue-600 rounded-full transition-all duration-1000"
             />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight text-right">
-             {completedLectures} of {totalLectures} lessons
-          </p>
+          <div className="flex justify-between items-center">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+               {completedLectures} / {totalLectures} Lessons
+            </p>
+            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest group-hover:translate-x-1 transition-transform">Resume →</span>
+          </div>
         </div>
-        <button className="w-full py-2.5 bg-gray-900 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-md active:scale-95">
-          Continue Learning
-        </button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -167,24 +157,21 @@ export const TimelineCourseCard = ({ course, index }) => {
   const { thumbnail, title, category, id, startDate } = course;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.1 }}
+    <div
       onClick={() => navigate(`/viewcourse/${id}`)}
-      className="flex gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-indigo-200 transition-all cursor-pointer shadow-sm hover:shadow-md"
+      className="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 hover:border-blue-100 transition-all cursor-pointer shadow-sm hover:shadow-lg hover:shadow-blue-50"
     >
-      <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-50">
+      <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-50 border border-slate-100">
         <img src={thumbnail} alt={title} className="w-full h-full object-cover" />
       </div>
       <div className="flex-1 flex flex-col justify-center">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-[9px] font-black text-indigo-600 uppercase tracking-widest">{category}</span>
-          <span className="w-1 h-1 bg-gray-200 rounded-full" />
-          <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{startDate || 'Recently Viewed'}</span>
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">{category}</span>
+          <span className="w-1 h-1 bg-slate-200 rounded-full" />
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{startDate || 'Upcoming Session'}</span>
         </div>
-        <h5 className="font-bold text-gray-900 line-clamp-1 text-sm">{title}</h5>
+        <h5 className="font-bold text-slate-900 line-clamp-1 text-sm group-hover:text-blue-600 transition-colors">{title}</h5>
       </div>
-    </motion.div>
+    </div>
   );
 };
