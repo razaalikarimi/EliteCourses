@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import img from "../../assets/empty.jpg";
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaPlus, FaGraduationCap, FaUsers, FaWallet } from "react-icons/fa";
-import Nav from '../../components/Nav';
+import AppShell from '../../components/AppShell';
+// BUG 1 FIX: Replaced old public Nav with AppShell for consistent sidebar layout
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -31,19 +31,11 @@ function Dashboard() {
   const totalStudents = creatorCourseData?.reduce((sum, course) => sum + (course.enrolledStudents?.length || 0), 0) || 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Nav />
-      
-      <main className="flex-1 max-w-7xl mx-auto w-full pt-32 pb-20 px-6 md:px-12 space-y-10">
+    <AppShell>
+      <main className="space-y-10">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div className="space-y-2">
-            <button 
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors font-medium text-sm mb-4"
-            >
-              <FaArrowLeftLong /> Back to home
-            </button>
             <h1 className="text-3xl font-bold text-gray-900">Educator Dashboard</h1>
             <p className="text-gray-500 font-medium">Monitor your performance and manage your content.</p>
           </div>
@@ -137,7 +129,7 @@ function Dashboard() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   )
 }
 
