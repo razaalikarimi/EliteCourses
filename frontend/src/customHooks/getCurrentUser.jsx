@@ -1,5 +1,3 @@
-// src/hooks/getCurrentUser.jsx  (ya jaha bhi file rakhi hai)
-
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -16,16 +14,14 @@ const useCurrentUser = () => {
           withCredentials: true,
         });
 
-        console.log("currentuser result:", result.data);
-
-        // Agar backend { user: {...} } bhej raha hai:
-        dispatch(setUserData(result.data.user || result.data));
+        // BUG 3 FIX: Backend now always returns { user }, read consistently
+        dispatch(setUserData(result.data.user));
       } catch (error) {
-        console.log("currentuser error:", {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message,
-        });
+        // 400/401 is expected when user is not logged in — not a real error
+        const status = error.response?.status;
+        if (status !== 400 && status !== 401) {
+          console.log("getCurrentUser unexpected error:", error.message);
+        }
         dispatch(setUserData(null));
       }
     };

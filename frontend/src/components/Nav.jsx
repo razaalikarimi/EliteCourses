@@ -21,14 +21,17 @@ function Nav() {
 
   const handleLogout = async () => {
     try {
-      const result = await axios.get(serverUrl + "/api/auth/logout", {
+      await axios.get(serverUrl + "/api/auth/logout", {
         withCredentials: true,
       });
-      console.log(result.data);
-      await dispatch(setUserData(null));
+      dispatch(setUserData(null));
       toast.success("LogOut Successfully");
+      navigate("/");
     } catch (error) {
-      console.log(error.response.data.message);
+      // Fix: safely read error message without crashing if backend is unreachable
+      dispatch(setUserData(null));
+      navigate("/");
+      console.log(error?.response?.data?.message || error.message);
     }
   };
   
@@ -38,12 +41,19 @@ function Nav() {
   return (
     <nav className="w-full h-[72px] fixed top-0 left-0 flex items-center justify-between px-6 md:px-12 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/60 z-50">
       <div className="flex items-center gap-8">
-        <img
-          src={logo}
-          className="w-[48px] h-[48px] rounded-lg border border-gray-200 cursor-pointer object-cover"
+        <div 
+          className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate("/")}
-          alt="LMS Logo"
-        />
+        >
+          <img
+            src={logo}
+            className="w-[40px] h-[40px] rounded-lg border border-gray-200 object-cover"
+            alt="EliteCourses Logo"
+          />
+          <span className="font-black text-gray-900 text-lg tracking-tight hidden sm:block">
+            Elite<span className="text-blue-600">Courses</span>
+          </span>
+        </div>
         <div className="hidden md:flex items-center gap-6">
           <span 
             className="text-gray-600 hover:text-blue-600 cursor-pointer font-medium"
@@ -52,11 +62,33 @@ function Nav() {
             Courses
           </span>
           {userData?.role === "educator" && (
+            <>
+              <span 
+                className="text-gray-600 hover:text-blue-600 cursor-pointer font-medium"
+                onClick={() => navigate("/dashboard")}
+              >
+                Dashboard
+              </span>
+              <span 
+                className="text-gray-600 hover:text-blue-600 cursor-pointer font-medium"
+                onClick={() => navigate("/escalateddoubts")}
+              >
+                Doubts
+              </span>
+              <span 
+                className="text-gray-600 hover:text-blue-600 cursor-pointer font-medium"
+                onClick={() => navigate("/admin/ingest")}
+              >
+                Knowledge Base
+              </span>
+            </>
+          )}
+          {userData && userData.role !== "educator" && (
             <span 
               className="text-gray-600 hover:text-blue-600 cursor-pointer font-medium"
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/mydoubts")}
             >
-              Dashboard
+              My Doubts
             </span>
           )}
         </div>
@@ -148,7 +180,14 @@ function Nav() {
           <div className="flex flex-col gap-4">
             <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/allcourses"); setShowHam(false); }}>Courses</span>
             {userData?.role === "educator" && (
-              <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/dashboard"); setShowHam(false); }}>Dashboard</span>
+              <>
+                <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/dashboard"); setShowHam(false); }}>Dashboard</span>
+                <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/escalateddoubts"); setShowHam(false); }}>Doubts</span>
+                <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/admin/ingest"); setShowHam(false); }}>Knowledge Base</span>
+              </>
+            )}
+            {userData && userData.role !== "educator" && (
+              <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/mydoubts"); setShowHam(false); }}>My Doubts</span>
             )}
             <div className="h-px bg-gray-100 my-2"></div>
             <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/profile"); setShowHam(false); }}>Profile</span>

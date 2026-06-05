@@ -49,9 +49,10 @@ function Login() {
       const response = await signInWithPopup(auth, provider);
       const { displayName: name, email } = response.user;
 
+      // BUG 2 FIX: Default role to "student" instead of "" to avoid userModel enum validation error
       const result = await axios.post(
         serverUrl + "/api/auth/googlesignup",
-        { name, email, role: "" },
+        { name, email, role: "student" },
         { withCredentials: true }
       );
       dispatch(setUserData(result.data));

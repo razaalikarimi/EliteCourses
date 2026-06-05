@@ -17,10 +17,13 @@ import {
   HiX,
   HiPlus,
   HiLightningBolt,
-  HiUser
+  HiUser,
+  HiQuestionMarkCircle,
+  HiExclamation,
 } from 'react-icons/hi';
+import FloatingChat from './FloatingChat';
 
-const AppShell = ({ children }) => {
+const AppShell = ({ children, noPadding = false }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const navigate = useNavigate();
@@ -33,8 +36,14 @@ const AppShell = ({ children }) => {
     { id: 'courses', icon: HiAcademicCap, label: 'Explore', path: '/allcourses' },
     { id: 'learning', icon: HiBookOpen, label: 'My Learning', path: '/enrolledcourses' },
     ...(userData?.role === 'educator'
-      ? [{ id: 'studio', icon: HiChartBar, label: 'Studio', path: '/dashboard' }]
-      : []),
+      ? [
+          { id: 'studio', icon: HiChartBar, label: 'Studio', path: '/dashboard' },
+          { id: 'doubts', icon: HiExclamation, label: 'Doubts', path: '/escalateddoubts' },
+          { id: 'ingest', icon: HiLightningBolt, label: 'Knowledge Base', path: '/admin/ingest' },
+        ]
+      : [
+          { id: 'mydoubts', icon: HiQuestionMarkCircle, label: 'My Doubts', path: '/mydoubts' },
+        ]),
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -173,7 +182,7 @@ const AppShell = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-8 md:p-12 max-w-7xl mx-auto w-full">
+        <main className={`flex-1 w-full ${noPadding ? 'p-0 max-w-none' : 'p-8 md:p-12 max-w-7xl mx-auto'}`}>
           {children}
         </main>
       </div>
