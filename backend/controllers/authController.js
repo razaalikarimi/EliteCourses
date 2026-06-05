@@ -34,8 +34,8 @@ export const signUp=async (req,res)=>{
         let token = await genToken(user._id)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true, 
-            sameSite: "None",
+            secure: process.env.NODE_ENV === "production", 
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(201).json(user)
@@ -60,8 +60,8 @@ export const login=async(req,res)=>{
         let token =await genToken(user._id)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true, 
-            sameSite: "None",
+            secure: process.env.NODE_ENV === "production", 
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(200).json(user)
@@ -79,8 +79,8 @@ export const logOut = async(req,res)=>{
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: true,
-            sameSite: "None"
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
         })
         return res.status(200).json({message:"logOut Successfully"})
     } catch (error) {
@@ -101,8 +101,8 @@ export const googleSignup = async (req,res) => {
         let token =await genToken(user._id)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true, 
-            sameSite: "None",
+            secure: process.env.NODE_ENV === "production", 
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(200).json(user)
