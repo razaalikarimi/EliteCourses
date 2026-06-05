@@ -3,8 +3,21 @@ import Course from "../models/courseModel.js";
 import Lecture from "../models/lectureModel.js";
 import User from "../models/userModel.js";
 
+// BUG 10 FIX: Added educator role check helper
+const requireEducator = async (userId, res) => {
+  const user = await User.findById(userId).select("role");
+  if (!user || user.role !== "educator") {
+    res.status(403).json({ message: "Only educators can perform this action." });
+    return false;
+  }
+  return true;
+};
+
 export const createCourse = async (req, res) => {
   try {
+    // BUG 10 FIX: Only educators can create courses
+    if (!(await requireEducator(req.userId, res))) return;
+
     const { title, category } = req.body;
     if (!title || !category) {
       return res
@@ -59,6 +72,9 @@ export const getCreatorCourses = async (req, res) => {
 
 export const editCourse = async (req, res) => {
   try {
+    // BUG 10 FIX: Only educators can edit courses
+    if (!(await requireEducator(req.userId, res))) return;
+
     const { courseId } = req.params;
     const {
       title,
@@ -69,14 +85,14 @@ export const editCourse = async (req, res) => {
       price,
       isPublished,
     } = req.body;
-    let thumbnail;
-    if (req.file) {
-      thumbnail = await uploadOnCloudinary(req.file.path);
-    }
+
     let course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
+
+    // BUG 4 FIX: Only add thumbnail to updateData if a new file was uploaded
+    // Prevents overwriting existing thumbnail with undefined
     const updateData = {
       title,
       subTitle,
@@ -85,8 +101,10 @@ export const editCourse = async (req, res) => {
       level,
       price,
       isPublished,
-      thumbnail,
     };
+    if (req.file) {
+      updateData.thumbnail = await uploadOnCloudinary(req.file.path);
+    }
 
     course = await Course.findByIdAndUpdate(courseId, updateData, {
       new: true,
@@ -113,6 +131,9 @@ export const getCourseById = async (req, res) => {
 };
 export const removeCourse = async (req, res) => {
   try {
+    // BUG 10 FIX: Only educators can remove courses
+    if (!(await requireEducator(req.userId, res))) return;
+
     const courseId = req.params.courseId;
     const course = await Course.findById(courseId);
 
@@ -132,6 +153,9 @@ export const removeCourse = async (req, res) => {
 
 export const createLecture = async (req, res) => {
   try {
+    // BUG 10 FIX: Only educators can create lectures
+    if (!(await requireEducator(req.userId, res))) return;
+
     const { lectureTitle } = req.body;
     const { courseId } = req.params;
 
@@ -161,7 +185,8 @@ export const getCourseLecture = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
     await course.populate("lectures");
-    await course.save();
+    // BUG 11 FIX: Removed unnecessary course.save() from a GET endpoint
+    // Calling save() on a read operation was updating updatedAt on every view
     return res.status(200).json(course);
   } catch (error) {
     return res.status(500).json({ message: `Failed to get Lectures ${error}` });
@@ -170,6 +195,9 @@ export const getCourseLecture = async (req, res) => {
 
 export const editLecture = async (req, res) => {
   try {
+    // BUG 10 FIX: Only educators can edit lectures
+    if (!(await requireEducator(req.userId, res))) return;
+
     const { lectureId } = req.params;
     const { isPreviewFree, lectureTitle } = req.body;
     const lecture = await Lecture.findById(lectureId);
@@ -197,6 +225,9 @@ export const editLecture = async (req, res) => {
 
 export const removeLecture = async (req, res) => {
   try {
+    // BUG 10 FIX: Only educators can remove lectures
+    if (!(await requireEducator(req.userId, res))) return;
+
     const { lectureId } = req.params;
     const lecture = await Lecture.findByIdAndDelete(lectureId);
     if (!lecture) {
