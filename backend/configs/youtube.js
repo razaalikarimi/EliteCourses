@@ -1,11 +1,12 @@
 import { YoutubeTranscript } from "youtube-transcript";
 
 export function getYouTubeVideoId(url) {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
+  const cleanUrl = typeof url === 'string' ? url.trim() : '';
+  const regExp = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([a-zA-Z0-9_-]{11})/;
+  const match = cleanUrl.match(regExp);
 
-  if (match && match[2].length === 11) {
-    return match[2];
+  if (match && match[1]) {
+    return match[1];
   } else {
     throw new Error("Invalid YouTube URL.");
   }
