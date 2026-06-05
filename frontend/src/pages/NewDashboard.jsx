@@ -113,7 +113,7 @@ function NewDashboard() {
             <ProgressCourseCard
               key={course._id}
               course={course}
-              progress={Math.floor(Math.random() * 60) + 20}
+              progress={0}
             />
           ))}
         </div>
@@ -146,17 +146,18 @@ function NewDashboard() {
             )}
           </div>
           <div className="space-y-6">
+             {/* BUG 7 FIX: Replaced educator-only "Launch Studio" card with student-relevant AI Tutor card */}
              <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden group shadow-2xl">
                 <div className="relative z-10 space-y-4">
-                  <h3 className="text-2xl font-black leading-tight">Empower others.</h3>
+                  <h3 className="text-2xl font-black leading-tight">Got a question? 💬</h3>
                   <p className="text-slate-400 text-xs font-medium leading-relaxed">
-                    Start sharing your expertise with thousands of students worldwide.
+                    Ask our AI Tutor anything about your courses — instant answers, 24/7.
                   </p>
                   <button 
-                    onClick={() => navigate('/createcourses')}
-                    className="w-full py-3 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all"
+                    onClick={() => navigate('/mydoubts')}
+                    className="w-full py-3 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-violet-600 hover:text-white transition-all"
                   >
-                    Launch Studio
+                    Ask AI Tutor
                   </button>
                 </div>
              </div>

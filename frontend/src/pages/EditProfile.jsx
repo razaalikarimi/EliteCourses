@@ -6,8 +6,7 @@ import { setUserData } from '../redux/userSlice'
 import { toast } from 'react-toastify'
 import { ClipLoader } from 'react-spinners'
 import { useNavigate } from 'react-router-dom'
-import { FaArrowLeftLong } from "react-icons/fa6";
-import Nav from '../components/Nav';
+import AppShell from '../components/AppShell';
 
 function EditProfile() {
   const { userData } = useSelector(state => state.user)
@@ -31,7 +30,8 @@ function EditProfile() {
 
     try {
       const result = await axios.post(serverUrl + "/api/user/updateprofile", formData, { withCredentials: true })
-      dispatch(setUserData(result.data))
+      // Fix: backend now returns { user } wrapper, read result.data.user
+      dispatch(setUserData(result.data.user || result.data))
       toast.success("Profile updated successfully")
       navigate("/profile")
     } catch (error) {
@@ -42,14 +42,13 @@ function EditProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Nav />
-      <main className="flex-1 max-w-2xl mx-auto w-full pt-32 pb-20 px-6">
+    <AppShell>
+      <main className="max-w-2xl mx-auto w-full">
         <button 
           onClick={() => navigate("/profile")}
           className="mb-8 flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors font-medium text-sm"
         >
-          <FaArrowLeftLong /> Back to profile
+          ← Back to profile
         </button>
 
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden p-8 md:p-12 space-y-10">
@@ -126,7 +125,7 @@ function EditProfile() {
           </form>
         </div>
       </main>
-    </div>
+    </AppShell>
   )
 }
 

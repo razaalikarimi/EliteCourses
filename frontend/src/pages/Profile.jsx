@@ -1,8 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { FaArrowLeftLong } from "react-icons/fa6";
-import Nav from '../components/Nav';
+import AppShell from '../components/AppShell';
 
 function Profile() {
   const { userData } = useSelector(state => state.user)
@@ -11,14 +10,13 @@ function Profile() {
   if (!userData) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Nav />
-      <div className="max-w-4xl mx-auto pt-32 pb-20 px-6">
+    <AppShell>
+      <div className="max-w-4xl mx-auto">
         <button 
           onClick={() => navigate(-1)}
           className="mb-8 flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors font-medium text-sm"
         >
-          <FaArrowLeftLong /> Back
+          ← Back
         </button>
 
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
@@ -89,7 +87,7 @@ function Profile() {
           </div>
         </div>
       </div>
-    </div>
+    </AppShell>
   )
 }
 
