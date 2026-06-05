@@ -15,6 +15,7 @@ import ViewCourse from "./pages/ViewCourse";
 import EnrolledCourse from "./pages/EnrolledCourse";
 import ViewLecture from "./pages/ViewLecture";
 import SearchWithAi from "./pages/SearchWithAi";
+import MyDoubts from "./pages/MyDoubts";
 
 import Dashboard from "./pages/admin/Dashboard";
 import Courses from "./pages/admin/Courses";
@@ -22,6 +23,9 @@ import AddCourses from "./pages/admin/AddCourses";
 import CreateCourse from "./pages/admin/CreateCourse";
 import CreateLecture from "./pages/admin/CreateLecture";
 import EditLecture from "./pages/admin/EditLecture";
+import EscalatedDoubts from "./pages/admin/EscalatedDoubts";
+import Ingest from "./pages/admin/Ingest";
+import FloatingChat from "./components/FloatingChat";
 
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -30,7 +34,7 @@ import getCouseData from "./customHooks/getCouseData";
 import getCreatorCourseData from "./customHooks/getCreatorCourseData";
 import getAllReviews from "./customHooks/getAllReviews";
 
-export const serverUrl = "https://elitecoursesb.onrender.com";
+export const serverUrl = import.meta.env.MODE === "development" ? "http://localhost:8000" : "https://elitecoursesb.onrender.com";
 
 function App() {
   const { userData } = useSelector((state) => state.user);
@@ -62,7 +66,8 @@ function App() {
             )
           }
         />
-        <Route path="/login" element={<Login />} />
+        {/* BUG 8 FIX: Redirect logged-in users away from /login */}
+        <Route path="/login" element={!userData ? <Login /> : <Navigate to="/" />} />
         <Route
           path="/signup"
           element={!userData ? <SignUp /> : <Navigate to="/" />}
@@ -98,15 +103,20 @@ function App() {
           path="/searchwithai"
           element={<SearchWithAi />}
         />
+        <Route
+          path="/mydoubts"
+          element={userData ? <MyDoubts /> : <Navigate to="/signup" />}
+        />
 
         {/* Educator Protected */}
+        {/* BUG 9 FIX: Redirect unauthorized users to / (home) instead of /signup to avoid confusing UX */}
         <Route
           path="/dashboard"
           element={
             userData?.role === "educator" ? (
               <Dashboard />
             ) : (
-              <Navigate to="/signup" />
+              <Navigate to="/" />
             )
           }
         />
@@ -116,7 +126,7 @@ function App() {
             userData?.role === "educator" ? (
               <Courses />
             ) : (
-              <Navigate to="/signup" />
+              <Navigate to="/" />
             )
           }
         />
@@ -126,7 +136,7 @@ function App() {
             userData?.role === "educator" ? (
               <AddCourses />
             ) : (
-              <Navigate to="/signup" />
+              <Navigate to="/" />
             )
           }
         />
@@ -136,7 +146,7 @@ function App() {
             userData?.role === "educator" ? (
               <CreateCourse />
             ) : (
-              <Navigate to="/signup" />
+              <Navigate to="/" />
             )
           }
         />
@@ -146,7 +156,7 @@ function App() {
             userData?.role === "educator" ? (
               <CreateLecture />
             ) : (
-              <Navigate to="/signup" />
+              <Navigate to="/" />
             )
           }
         />
@@ -156,11 +166,32 @@ function App() {
             userData?.role === "educator" ? (
               <EditLecture />
             ) : (
-              <Navigate to="/signup" />
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/escalateddoubts"
+          element={
+            userData?.role === "educator" ? (
+              <EscalatedDoubts />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/admin/ingest"
+          element={
+            userData?.role === "educator" ? (
+              <Ingest />
+            ) : (
+              <Navigate to="/" />
             )
           }
         />
       </Routes>
+      <FloatingChat />
     </>
   );
 }
