@@ -13,6 +13,7 @@ export function getYouTubeVideoId(url) {
   }
 }
 
+// Fetch basic metadata for a YouTube video using YouTube's oEmbed endpoint
 export async function fetchYouTubeMetadata(url) {
   const videoId = getYouTubeVideoId(url);
   const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
