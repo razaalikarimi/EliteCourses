@@ -1,3 +1,4 @@
+// YouTube Caption & Metadata Fetcher Helper Functions
 import { YoutubeTranscript } from "youtube-transcript";
 
 // Extract 11 character video ID from various YouTube URL formats
