@@ -85,11 +85,19 @@ async function fetchTranscriptFallback(videoId) {
   const targetUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36';
   
-  const fetchStrategies = [
+  const fetchStrategies = [];
+  
+  // If ScraperAPI is configured, try it first to bypass cloud IP blocks
+  if (process.env.SCRAPER_API_KEY) {
+    const scraperUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(targetUrl)}`;
+    fetchStrategies.push(() => fetch(scraperUrl));
+  }
+
+  fetchStrategies.push(
     () => fetch(targetUrl, { headers: { 'User-Agent': userAgent, 'Accept-Language': 'en-US,en;q=0.9' } }),
     () => fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`),
     () => fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`)
-  ];
+  );
 
   let html = "";
   for (const strategy of fetchStrategies) {
@@ -116,9 +124,17 @@ async function fetchTranscriptFallback(videoId) {
 
   const track = tracks.find((t) => t.languageCode === 'en') || tracks[0];
 
-  const xmlRes = await fetch(track.baseUrl);
-  if (!xmlRes.ok) throw new Error("Failed to fetch XML transcript data");
-  const xmlText = await xmlRes.text();
+  let xmlText = "";
+  if (process.env.SCRAPER_API_KEY) {
+    const xmlScraperUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(track.baseUrl)}`;
+    const xmlRes = await fetch(xmlScraperUrl);
+    if (!xmlRes.ok) throw new Error("Failed to fetch XML transcript data");
+    xmlText = await xmlRes.text();
+  } else {
+    const xmlRes = await fetch(track.baseUrl);
+    if (!xmlRes.ok) throw new Error("Failed to fetch XML transcript data");
+    xmlText = await xmlRes.text();
+  }
 
   const textNodes = [...xmlText.matchAll(/<text[^>]*?(?:start="([^"]+)"|t="([^"]+)")[^>]*?>([\s\S]*?)<\/text>/g)];
   
