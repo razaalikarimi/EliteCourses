@@ -85,6 +85,7 @@ export async function fetchYouTubeTranscriptText(url) {
   return rawText;
 }
 
+// Fallback method to scrape YouTube captions if the primary API fails (supports ScraperAPI)
 async function fetchTranscriptFallback(videoId) {
   const targetUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36';
