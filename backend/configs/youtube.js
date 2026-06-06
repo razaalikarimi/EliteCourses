@@ -44,6 +44,7 @@ export async function fetchYouTubeMetadata(url) {
   }
 }
 
+// Convert milliseconds into a human-readable HH:MM:SS or MM:SS format
 function formatDuration(ms) {
   const seconds = Math.floor(ms / 1000);
   const h = Math.floor(seconds / 3600);
