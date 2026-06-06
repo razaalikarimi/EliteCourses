@@ -1,5 +1,6 @@
 import { YoutubeTranscript } from "youtube-transcript";
 
+// Extract 11 character video ID from various YouTube URL formats
 export function getYouTubeVideoId(url) {
   const cleanUrl = typeof url === 'string' ? url.trim() : '';
   const regExp = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([a-zA-Z0-9_-]{11})/;
