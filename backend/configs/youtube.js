@@ -54,6 +54,7 @@ function formatDuration(ms) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+// Fetch and format YouTube transcript text with timestamps
 export async function fetchYouTubeTranscriptText(url) {
   const videoId = getYouTubeVideoId(url);
 
