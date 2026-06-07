@@ -19,8 +19,12 @@ export const getCurrentUser = async (req,res) => {
 export const UpdateProfile = async (req,res) => {
     try {
         const userId = req.userId
-        const {name , description} = req.body
+        const {name , description, customGeminiApiKey} = req.body
         const updateData = { name, description }
+
+        if (customGeminiApiKey !== undefined) {
+            updateData.customGeminiApiKey = customGeminiApiKey.trim();
+        }
 
         if(req.file){
             updateData.photoUrl = await uploadOnCloudinary(req.file.path)
