@@ -63,6 +63,7 @@ const generateAIResponse = async (currentQuestion, history = [], courseTitle = n
 
     // Search Knowledge Base (MongoDB) for relevant material using text index
     let ragContext = "";
+    const relevantChunks = [];
     try {
       // ── 1. Search ingested Knowledge Base (YouTube, articles, notes) ──
       const kbResults = await Content.find(
@@ -96,8 +97,6 @@ const generateAIResponse = async (currentQuestion, history = [], courseTitle = n
             .limit(3)
             .lean()
         : [];
-
-      const relevantChunks = [];
 
       // Helper: convert "MM:SS" or "HH:MM:SS" to seconds for YouTube timestamp
       const timeToSeconds = (timeStr) => {
