@@ -3,205 +3,175 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AppShell from '../components/AppShell';
 import {
-  FeaturedCourseCard,
-  CompactCourseCard,
-  ProgressCourseCard,
-  TimelineCourseCard,
-} from '../components/CourseCardVariants';
-import {
   HiClock,
   HiLightningBolt,
   HiBookmark,
-  HiChartBar,
 } from 'react-icons/hi';
 
 function NewDashboard() {
   const navigate = useNavigate();
-  const { courseData } = useSelector((state) => state.course);
   const { userData } = useSelector((state) => state.user);
+
+  const enrolledCourses = userData?.enrolledCourses || [];
 
   const stats = [
     {
       label: 'Courses Enrolled',
-      value: userData?.enrolledCourses?.length || '0',
-      change: '+2 this month',
+      value: enrolledCourses.length,
       icon: HiBookmark,
-      color: 'bg-blue-50 text-blue-600',
+      color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
     },
     {
       label: 'Hours Learned',
-      value: '12h',
-      change: '+2.4h this week',
+      value: '12 hours',
       icon: HiClock,
-      color: 'bg-purple-50 text-purple-600',
+      color: 'bg-violet-50 text-violet-600 border-violet-100',
     },
     {
-      label: 'Completion Rate',
-      value: '45%',
-      change: 'Improving',
-      icon: HiChartBar,
-      color: 'bg-amber-50 text-amber-600',
-    },
-    {
-      label: 'Current Streak',
+      label: 'Study Streak',
       value: '4 days',
-      change: 'Keep it up!',
       icon: HiLightningBolt,
-      color: 'bg-emerald-50 text-emerald-600',
+      color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },
   ];
 
-  const featuredCourse = courseData?.[0];
-  const recentCourses = courseData?.slice(1, 4) || [];
-  const recommendedCourses = courseData?.slice(4, 10) || [];
-  const upcomingCourses = courseData?.slice(0, 2) || [];
-
   return (
     <AppShell>
-      {/* Welcome Section */}
-      <div className="mb-12 space-y-2">
-        <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-          Welcome back, {userData?.name?.split(' ')[0] || 'Learner'}! 👋
-        </h1>
-        <p className="text-slate-500 font-medium">
-          Continue your learning journey and explore new skills today.
-        </p>
+      {/* Welcome Banner */}
+      <div className="mb-10 p-8 rounded-3xl bg-slate-50 border border-slate-200 text-slate-800 shadow-sm relative overflow-hidden">
+        <div className="relative z-10 space-y-2 max-w-xl">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            Welcome back, {userData?.name?.split(' ')[0] || 'Learner'}!
+          </h1>
+          <p className="text-slate-500 text-sm font-medium">
+            Learn at your own pace. Ask your doubts 24/7 to our AI Tutor, and track your lectures.
+          </p>
+        </div>
+        <div className="absolute right-6 bottom-0 opacity-5 pointer-events-none transform translate-y-4">
+          <span className="text-[10rem]">🎓</span>
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-lg hover:shadow-slate-100 transition-all group"
+            className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center gap-5"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`w-12 h-12 rounded-2xl ${stat.color} flex items-center justify-center`}>
-                <stat.icon className="w-6 h-6" />
-              </div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</span>
+            <div className={`w-14 h-14 rounded-2xl ${stat.color} border flex items-center justify-center`}>
+              <stat.icon className="w-7 h-7" />
             </div>
-            <div className="space-y-1">
-              <div className="text-3xl font-black text-slate-900 tabular-nums">
-                {stat.value}
-              </div>
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">
-                {stat.change}
-              </div>
+            <div className="space-y-0.5">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-2xl font-black text-slate-800">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Continue Learning Section */}
-      <section className="mb-16">
-        <div className="flex items-end justify-between mb-8 pb-4 border-b border-slate-50">
-          <div>
-            <h2 className="text-xl font-black text-slate-900">Continue Learning</h2>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pick up where you left off</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        {/* Enrolled Courses list (Main Left column) */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+            <h2 className="text-xl font-bold text-slate-800">My Enrolled Courses</h2>
+            <button
+              onClick={() => navigate('/allcourses')}
+              className="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline"
+            >
+              Browse All Courses
+            </button>
           </div>
-          <button
-            onClick={() => navigate('/enrolledcourses')}
-            className="text-blue-600 font-black text-[10px] uppercase tracking-widest hover:text-blue-700 transition-colors"
-          >
-            All Courses →
-          </button>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {recentCourses.map((course) => (
-            <ProgressCourseCard
-              key={course._id}
-              course={course}
-              progress={0}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Discover Section */}
-      <section className="mb-16">
-        <div className="flex items-end justify-between mb-8 pb-4 border-b border-slate-50">
-          <div>
-            <h2 className="text-xl font-black text-slate-900">Discover New Skills</h2>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Handpicked for your interests</p>
-          </div>
-          <button
-            onClick={() => navigate('/allcourses')}
-            className="text-blue-600 font-black text-[10px] uppercase tracking-widest hover:text-blue-700 transition-colors"
-          >
-            Explore All →
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            {featuredCourse && (
-              <FeaturedCourseCard
-                course={{
-                  ...featuredCourse,
-                  id: featuredCourse._id,
-                }}
-              />
-            )}
-          </div>
-          <div className="space-y-6">
-             {/* BUG 7 FIX: Replaced educator-only "Launch Studio" card with student-relevant AI Tutor card */}
-             <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden group shadow-2xl">
-                <div className="relative z-10 space-y-4">
-                  <h3 className="text-2xl font-black leading-tight">Got a question? 💬</h3>
-                  <p className="text-slate-400 text-xs font-medium leading-relaxed">
-                    Ask our AI Tutor anything about your courses — instant answers, 24/7.
-                  </p>
-                  <button 
-                    onClick={() => navigate('/mydoubts')}
-                    className="w-full py-3 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-violet-600 hover:text-white transition-all"
-                  >
-                    Ask AI Tutor
-                  </button>
+          {enrolledCourses.length === 0 ? (
+            <div className="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-10 text-center space-y-4">
+              <span className="text-4xl block">📚</span>
+              <p className="text-slate-500 font-medium text-sm">You haven't enrolled in any courses yet.</p>
+              <button
+                onClick={() => navigate('/allcourses')}
+                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-md transition-all"
+              >
+                Explore Courses
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {enrolledCourses.map((course) => (
+                <div
+                  key={course._id}
+                  className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm flex flex-col group hover:shadow-md transition-shadow"
+                >
+                  <div className="h-40 bg-slate-100 relative overflow-hidden flex items-center justify-center">
+                    {course.thumbnail ? (
+                      <img
+                        src={course.thumbnail}
+                        alt={course.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <span className="text-4xl">📘</span>
+                    )}
+                    <span className="absolute top-3 right-3 px-2 py-1 bg-slate-900/80 text-white text-[10px] font-bold rounded-lg uppercase tracking-wider">
+                      {course.category}
+                    </span>
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="font-bold text-slate-800 text-sm line-clamp-2">{course.title}</h3>
+                      <p className="text-slate-400 text-xs mt-1">Level: {course.level || 'Beginner'}</p>
+                    </div>
+                    <button
+                      onClick={() => navigate(`/viewcourse/${course._id}`)}
+                      className="w-full py-2.5 bg-slate-900 hover:bg-indigo-600 text-white hover:text-white rounded-xl font-bold text-xs transition-colors"
+                    >
+                      Start Study
+                    </button>
+                  </div>
                 </div>
-             </div>
-             
-             <div className="space-y-4">
-               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recommended</p>
-               {recommendedCourses.slice(0, 3).map((course) => (
-                 <CompactCourseCard
-                   key={course._id}
-                   course={{
-                     ...course,
-                     id: course._id,
-                   }}
-                 />
-               ))}
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Upcoming Section */}
-      <section className="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm mb-20">
-        <div className="mb-8 flex justify-between items-end">
-          <div className="space-y-1">
-            <h2 className="text-xl font-black text-slate-900">Upcoming Live Sessions</h2>
-            <p className="text-xs text-slate-500 font-medium tracking-tight">Interactive learning events this week</p>
-          </div>
-          <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-lg">Live Soon</span>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {upcomingCourses.map((course, index) => (
-            <TimelineCourseCard
-              key={course._id}
-              course={{
-                ...course,
-                id: course._id,
-                startDate: index === 0 ? 'TOMORROW • 10:00 AM' : 'WED • 02:00 PM',
-              }}
-              index={index}
-            />
-          ))}
+        {/* AI Tutor promo and quick settings card (Right column) */}
+        <div className="space-y-6">
+          <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100/50 rounded-2xl p-6 shadow-sm space-y-4">
+            <span className="text-3xl block">🤖</span>
+            <div className="space-y-1">
+              <h3 className="font-bold text-slate-800 text-base">Elite AI Doubt Solver</h3>
+              <p className="text-slate-500 text-xs leading-relaxed">
+                Stuck on a code error or need clarification? Ask our AI Tutor directly and get responses instantly, 24/7.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/mydoubts')}
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-all shadow-md shadow-indigo-100"
+            >
+              Ask AI Tutor ✨
+            </button>
+          </div>
+
+          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-3">
+            <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Quick Actions</h4>
+            <div className="space-y-2">
+              <button
+                onClick={() => navigate('/profile')}
+                className="w-full text-left py-2 px-3 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors flex items-center justify-between"
+              >
+                <span>👤 View Profile</span>
+                <span>→</span>
+              </button>
+              <button
+                onClick={() => navigate('/editprofile')}
+                className="w-full text-left py-2 px-3 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors flex items-center justify-between"
+              >
+                <span>⚙️ Account Settings</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
     </AppShell>
   );
 }
