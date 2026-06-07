@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Course'
     }],
+    customGeminiApiKey: {
+      type: String,
+      default: ""
+    },
     resetOtp:{
       type:String
     },
