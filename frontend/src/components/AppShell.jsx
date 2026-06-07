@@ -156,7 +156,7 @@ const AppShell = ({ children, noPadding = false }) => {
         style={{ marginLeft: sidebarCollapsed ? 80 : 260, transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
       >
         {/* Top Header */}
-        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between px-8 md:px-12 sticky top-0 z-30">
+        <header className="h-20 bg-slate-100/90 backdrop-blur-md border-b border-slate-300/80 flex items-center justify-between px-8 md:px-12 sticky top-0 z-30">
           <div className="flex-1 max-w-xl">
             <div 
               onClick={() => setShowCommandPalette(true)}
