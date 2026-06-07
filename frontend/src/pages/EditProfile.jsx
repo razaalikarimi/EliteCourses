@@ -14,6 +14,8 @@ function EditProfile() {
   const [description, setDescription] = useState(userData?.description || "")
   const [photoUrl, setPhotoUrl] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [customGeminiApiKey, setCustomGeminiApiKey] = useState(userData?.customGeminiApiKey || "")
+  const [showApiKey, setShowApiKey] = useState(false)
   
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -26,6 +28,7 @@ function EditProfile() {
     const formData = new FormData()
     formData.append("name", name)
     formData.append("description", description)
+    formData.append("customGeminiApiKey", customGeminiApiKey)
     if (photoUrl) formData.append("photoUrl", photoUrl)
 
     try {
@@ -112,6 +115,29 @@ function EditProfile() {
                   placeholder="Tell us about yourself..."
                   onChange={(e) => setDescription(e.target.value)}
                 />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-bold text-gray-700 ml-1">Custom Gemini API Key (Optional)</label>
+                <div className="relative flex items-center">
+                  <input
+                    type={showApiKey ? "text" : "password"}
+                    className="w-full pl-4 pr-12 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 transition-all font-mono text-sm"
+                    value={customGeminiApiKey}
+                    placeholder="AIzaSy..."
+                    onChange={(e) => setCustomGeminiApiKey(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-4 text-gray-400 hover:text-gray-600 focus:outline-none text-xs font-bold"
+                  >
+                    {showApiKey ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <p className="text-[11px] text-gray-400 font-medium ml-1">
+                  Get a free API Key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Google AI Studio</a> to bypass platform rate limits.
+                </p>
               </div>
             </div>
 
