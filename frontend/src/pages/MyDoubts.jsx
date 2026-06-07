@@ -314,7 +314,7 @@ const MyDoubts = () => {
                   💬
                 </div>
                 <h3 className="text-lg font-black text-slate-800 tracking-tight">AI Doubt Solver</h3>
-                <p className="text-slate-400 text-sm mt-1 max-w-sm">Select an existing doubt thread from the sidebar history, or start a fresh one.</p>
+                <p className="text-slate-400 text-sm mt-1 max-w-sm">Select a question from the sidebar history, or start a new one.</p>
                 <button
                   onClick={() => {
                     setLocalActiveDoubt(null)
@@ -402,7 +402,7 @@ const MyDoubts = () => {
                         <button
                           onClick={handleEscalate}
                           className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all ml-1"
-                        >⚡ Escalate to Mentor</button>
+                        >⚡ Ask a Teacher</button>
                       )}
                     </div>
                   )}
@@ -432,7 +432,7 @@ const MyDoubts = () => {
                 ) : (
                   <div className="p-4 border-t border-slate-100 flex-shrink-0 bg-slate-50/50">
                     <p className="text-center text-xs text-amber-600 font-bold bg-amber-50 py-3 rounded-xl">
-                      ⚡ This doubt has been escalated — waiting for mentor reply
+                      ⚡ Sent to teacher — waiting for their reply
                     </p>
                   </div>
                 )}
