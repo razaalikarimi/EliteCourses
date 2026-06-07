@@ -31,7 +31,7 @@ function ExploreCourses() {
           Explore by <br /> Category
         </h2>
         <p className="text-gray-600 text-lg">
-          We offer practical courses in high-demand fields. Choose what you want to learn today.
+          We have courses in many popular topics. Choose what you want to learn today.
         </p>
         <button 
           className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
