@@ -6,12 +6,50 @@ import Course from "../models/courseModel.js"
 import Content from "../models/contentModel.js"
 dotenv.config()
 
+const filterHallucinatedUrls = (text, relevantChunks) => {
+  if (!text) return text;
+  
+  const allowedUrls = relevantChunks.map(c => c.url).filter(Boolean);
+  const urlRegex = /https?:\/\/[^\s]+/gi;
+  
+  let filteredText = text.replace(urlRegex, (url) => {
+    const cleanUrl = url.replace(/[.,)]+$/, "");
+    const isAllowed = allowedUrls.some(allowed => {
+      if (allowed === cleanUrl) return true;
+      const getYouTubeId = (u) => {
+        const match = u.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([a-zA-Z0-9_-]{11})/);
+        return match ? match[1] : null;
+      };
+      const allowedId = getYouTubeId(allowed);
+      const cleanId = getYouTubeId(cleanUrl);
+      return allowedId && cleanId && allowedId === cleanId;
+    });
+    return isAllowed ? url : "";
+  });
+
+  // Remove trailing "Source:" or "Link:" headers if the URL was removed
+  filteredText = filteredText
+    .replace(/(?:Source|Link|Video|Reference):\s*$/gim, "")
+    .replace(/^\s*[\r\n]/gm, "")
+    .trim();
+
+  return filteredText;
+};
+
 // ─────────────────────────────────────────────
 // Gemini AI Response Generator (with RAG support)
 // ─────────────────────────────────────────────
-const generateAIResponse = async (currentQuestion, history = [], courseTitle = null) => {
+const generateAIResponse = async (currentQuestion, history = [], courseTitle = null, userId = null) => {
+  let userCustomKey = null
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY })
+    if (userId) {
+      const user = await User.findById(userId).select("customGeminiApiKey")
+      if (user?.customGeminiApiKey && user.customGeminiApiKey.trim()) {
+        userCustomKey = user.customGeminiApiKey.trim()
+      }
+    }
+    const apiKey = userCustomKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY
+    const ai = new GoogleGenAI({ apiKey })
 
     const historyText = history.length > 0
       ? history
@@ -197,7 +235,8 @@ FORMATTING RULES:
       }
 
       const data = await openAiResponse.json()
-      return data.choices[0]?.message?.content || "I'm having trouble generating a response right now. Please try again."
+      const rawText = data.choices[0]?.message?.content || "I'm having trouble generating a response right now. Please try again."
+      return filterHallucinatedUrls(rawText, relevantChunks)
     } else {
       console.log("Using Google Gemini Tutor...")
       const prompt = `${systemPrompt}\n\n${historyText ? `Previous conversation:\n${historyText}\n\n` : ""}Student's current question: ${currentQuestion}`
@@ -216,10 +255,41 @@ FORMATTING RULES:
         })
       }
 
-      return response.text || "I'm having trouble generating a response right now. Please try again."
+      const rawText = response.text || "I'm having trouble generating a response right now. Please try again."
+      return filterHallucinatedUrls(rawText, relevantChunks)
     }
   } catch (error) {
     console.log("AI tutor error:", error)
+
+    const isQuotaOrRateLimit = (err) => {
+      if (!err) return false
+      if (err.status === 429 || err.statusCode === 429) return true
+      const msg = (err.message || "").toLowerCase()
+      const statusStr = (err.status || "").toString().toLowerCase()
+      return msg.includes("429") || 
+             msg.includes("quota") || 
+             msg.includes("exhausted") || 
+             msg.includes("rate_limit") || 
+             msg.includes("rate limit") ||
+             statusStr.includes("exhausted") ||
+             statusStr.includes("429")
+    }
+
+    if (isQuotaOrRateLimit(error)) {
+      if (userCustomKey) {
+        return "I'm sorry, your custom Gemini API Key has exceeded its rate limit or quota. Please check your Google AI Studio usage/billing or wait a few seconds before trying again."
+      } else {
+        return "The AI Tutor is temporarily busy because the platform's free Gemini quota has been reached. Please try again in a few seconds, or escalate this doubt to a mentor. You can also configure your own Gemini API Key in your Profile to bypass platform limits."
+      }
+    }
+
+    const errStr = (error.message || "").toLowerCase()
+    if (errStr.includes("api key") || errStr.includes("api_key_invalid") || errStr.includes("invalid api key") || (error.status === 400 && errStr.includes("key"))) {
+      if (userCustomKey) {
+        return "It seems your custom Gemini API Key is invalid or expired. Please update it in your Profile settings."
+      }
+    }
+
     return "I'm sorry, I couldn't process your doubt at the moment. Please try again or escalate to a mentor."
   }
 }
@@ -272,7 +342,7 @@ export const createDoubt = async (req, res) => {
     await doubt.save()
 
     // Generate AI response
-    const aiAnswer = await generateAIResponse(description, [], courseTitle)
+    const aiAnswer = await generateAIResponse(description, [], courseTitle, userId)
 
     // Add AI reply and mark as resolved
     doubt.replies.push({
@@ -379,7 +449,7 @@ export const sendFollowUp = async (req, res) => {
     })
 
     // Generate AI response with full conversation history
-    const aiAnswer = await generateAIResponse(message.trim(), doubt.replies.slice(0, -1), courseTitle)
+    const aiAnswer = await generateAIResponse(message.trim(), doubt.replies.slice(0, -1), courseTitle, userId)
 
     // Add AI reply
     doubt.replies.push({
