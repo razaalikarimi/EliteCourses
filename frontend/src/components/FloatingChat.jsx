@@ -172,8 +172,8 @@ const FloatingChat = () => {
   }
 
   // BUG 6 FIX: FloatingChat is for students only — hide for educators
-  // Educators have their own EscalatedDoubts panel for managing doubts
-  if (!userData || userData.role === "educator") return null
+  // Only render on viewlecture or viewcourse pages where student is actively studying/browsing a course
+  if (!userData || userData.role === "educator" || !pathMatch) return null
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
@@ -250,7 +250,7 @@ const FloatingChat = () => {
               {view === "new" && (
                 <div className="flex-1 flex flex-col p-5 gap-4">
                   <div className="bg-violet-50 rounded-2xl p-4 border border-violet-100">
-                    <p className="text-violet-800 font-bold text-sm">👋 Hi {userData.name?.split(" ")[0]}!</p>
+                    <p className="text-violet-800 font-bold text-sm">Hi {userData.name?.split(" ")[0]}!</p>
                     <p className="text-violet-600 text-xs mt-1">
                       Ask me anything — I'll give you an instant AI answer. Still stuck? Escalate to your mentor.
                     </p>
@@ -360,7 +360,7 @@ const FloatingChat = () => {
                             onClick={handleEscalate}
                             className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg hover:bg-amber-100 transition-all ml-1"
                           >
-                            Escalate to Mentor
+                            Ask a Teacher
                           </button>
                         )}
                       </div>
@@ -397,7 +397,7 @@ const FloatingChat = () => {
                   {activeDoubt.status === "escalated" && (
                     <div className="p-3 border-t border-slate-50 flex-shrink-0">
                       <p className="text-center text-xs text-amber-600 font-bold bg-amber-50 py-2 rounded-xl">
-                        ⚡ Escalated — Waiting for mentor reply
+                        ⚡ Sent to teacher — Waiting for their answer
                       </p>
                     </div>
                   )}
