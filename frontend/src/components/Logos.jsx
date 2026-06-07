@@ -6,7 +6,8 @@ function Logos() {
     "Lifetime Access",
     "Value For Money",
     "Lifetime Support",
-    "Community Support"
+    "Community Support",
+    "🤖 24/7 AI Doubt Solving"
   ];
 
   return (
