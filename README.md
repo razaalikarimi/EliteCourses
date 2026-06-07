@@ -118,6 +118,8 @@ The platform follows a standard **client-server architecture** with a REST API b
 ### 🎓 For Students
 - **Smart Course Discovery** — Browse by category, level, or price
 - **🤖 AI-Powered Search** — Describe what you want to learn in plain English; Gemini 2.5 Flash maps it to the right course category
+- **🤖 AI Tutor & Doubt Solver** — Ask questions 24/7. Powered by Gemini, retrieving study context from course lectures and ingested videos/documents
+- **Custom AI Keys** — Set up a personal Gemini API key in your Profile settings to bypass platform rate limits and query constraints
 - **Google OAuth** — One-click sign up with Google via Firebase
 - **Secure Payments** — Buy courses with Razorpay (UPI, cards, net banking)
 - **Video Learning** — Smooth in-browser video player for lectures
@@ -127,8 +129,9 @@ The platform follows a standard **client-server architecture** with a REST API b
 ### 🧑‍🏫 For Educators
 - **Course Builder** — Create multi-lecture courses with thumbnails
 - **Video Upload** — Upload lecture videos directly (stored on Cloudinary)
+- **Knowledge Ingestion (RAG)** — Ingest YouTube videos, notes, and documents to populate the AI Tutor's knowledge base
 - **Publish Control** — Draft → Ready → Published workflow
-- **Instructor Dashboard** — See enrollments, revenue, and course analytics
+- **Instructor Dashboard** — Clean dashboard listing course price, earnings, student counts, and lecture metrics (No heavy charts)
 - **Edit Anytime** — Update course details, edit or delete lectures
 
 ### 🔐 Authentication & Security
@@ -255,9 +258,8 @@ EliteCourses/
     │   │       └── EditLecture.jsx
     │   ├── components/
     │   │   ├── Nav.jsx, Footer.jsx
-    │   │   ├── Card.jsx, CourseCardVariants.jsx
-    │   │   ├── AppShell.jsx          # Layout wrapper
-    │   │   └── VideoPlayer.jsx
+    │   │   ├── Card.jsx
+    │   │   └── AppShell.jsx          # Layout wrapper
     │   ├── redux/                    # Redux slices & store
     │   ├── customHooks/              # Data fetching hooks
     │   └── App.jsx                   # Routes
