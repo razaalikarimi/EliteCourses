@@ -39,7 +39,7 @@ function Nav() {
   const isSignUpPage = location.pathname === "/signup";
 
   return (
-    <nav className="w-full h-[72px] fixed top-0 left-0 flex items-center justify-between px-6 md:px-12 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/60 z-50">
+    <nav className="w-full h-[72px] fixed top-0 left-0 flex items-center justify-between px-6 md:px-12 bg-slate-100/90 backdrop-blur-md border-b border-slate-300/80 z-50">
       <div className="flex items-center gap-8">
         <div 
           className="flex items-center gap-3 cursor-pointer"
