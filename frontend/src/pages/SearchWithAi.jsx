@@ -75,7 +75,7 @@ function SearchWithAi() {
               </h1>
             </div>
             <p className="text-gray-500 font-medium max-w-lg mx-auto">
-              Our intelligent assistant helps you find exactly what you need. Just type or use your voice to search our catalog.
+              Our AI search helps you find exactly what you need. Just type or use your voice to search our catalog.
             </p>
           </div>
 
