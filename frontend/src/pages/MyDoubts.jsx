@@ -260,23 +260,6 @@ const MyDoubts = () => {
                   </div>
 
                   <div className="space-y-4 text-left">
-                    {/* Course selection */}
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Related Course (Optional)</label>
-                      <select
-                        value={newDoubtCourse}
-                        onChange={(e) => setNewDoubtCourse(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:border-violet-400 transition-all cursor-pointer font-semibold"
-                      >
-                        <option value="">General Doubt (No specific course)</option>
-                        {userData?.enrolledCourses?.map((course) => (
-                          <option key={course._id} value={course._id}>
-                            📚 {course.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
                     {/* Question input */}
                     <div className="flex flex-col gap-3">
                       <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Question</label>
