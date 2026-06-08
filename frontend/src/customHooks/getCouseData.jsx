@@ -15,7 +15,6 @@ const useCourseData = () => {
           { withCredentials: true }
         );
 
-        console.log("published courses:", result.data);
         dispatch(setCourseData(result.data));
       } catch (error) {
         console.log("published courses error:", {
