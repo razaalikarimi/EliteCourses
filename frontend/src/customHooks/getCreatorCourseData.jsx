@@ -1,9 +1,6 @@
-// src/hooks/getCreatorCourseData.jsx
-
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { setCreatorCourseData } from "../redux/courseSlice";
 import { serverUrl } from "../App";
 
@@ -21,19 +18,12 @@ const useCreatorCourseData = () => {
           serverUrl + "/api/course/getcreatorcourses",
           { withCredentials: true }
         );
-
-        console.log("creator courses:", result.data);
         dispatch(setCreatorCourseData(result.data));
       } catch (error) {
-        console.log("creatorcourses error:", {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message,
-        });
-
-        toast.error(
-          error?.response?.data?.message || "Failed to load creator courses"
-        );
+        // Silently ignore — non-educators will get 403, which is expected
+        if (error?.response?.status !== 403 && error?.response?.status !== 401) {
+          console.error("getCreatorCourseData error:", error.message);
+        }
       }
     };
 
