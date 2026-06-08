@@ -14,6 +14,12 @@ function NewDashboard() {
 
   const enrolledCourses = userData?.enrolledCourses || [];
 
+  // BUG-22 FIX: Calculate real stats from actual data instead of hardcoded fake values
+  const totalLectures = enrolledCourses.reduce(
+    (sum, course) => sum + (course?.lectures?.length || 0),
+    0
+  );
+
   const stats = [
     {
       label: 'Courses Enrolled',
@@ -22,14 +28,14 @@ function NewDashboard() {
       color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
     },
     {
-      label: 'Hours Learned',
-      value: '12 hours',
+      label: 'Total Lectures',
+      value: totalLectures,
       icon: HiClock,
       color: 'bg-violet-50 text-violet-600 border-violet-100',
     },
     {
-      label: 'Study Streak',
-      value: '4 days',
+      label: 'Certificates',
+      value: 0,
       icon: HiLightningBolt,
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },
@@ -121,10 +127,10 @@ function NewDashboard() {
                       <p className="text-slate-400 text-xs mt-1">Level: {course.level || 'Beginner'}</p>
                     </div>
                     <button
-                      onClick={() => navigate(`/viewcourse/${course._id}`)}
+                      onClick={() => navigate(`/viewlecture/${course._id}`)}
                       className="w-full py-2.5 bg-slate-900 hover:bg-indigo-600 text-white hover:text-white rounded-xl font-bold text-xs transition-colors"
                     >
-                      Start Study
+                      Resume Course
                     </button>
                   </div>
                 </div>
