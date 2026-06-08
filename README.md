@@ -485,7 +485,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <div align="center">
 
-Made with ❤️ and a lot of ☕
+Made with ❤️, passion and coffee ☕
 
 ⭐ **Star this repo if you found it useful!** ⭐
 
