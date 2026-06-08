@@ -5,7 +5,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { MdOutlineRemoveRedEye, MdRemoveRedEye } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth, provider } from "../../utils/Firebase";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
@@ -22,6 +22,31 @@ function Login() {
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Handle redirect result on mount (only needed in production after Google redirect)
+  React.useEffect(() => {
+    if (import.meta.env.MODE === 'development') return; // popup handles it directly in dev
+    const handleRedirectResult = async () => {
+      try {
+        const response = await getRedirectResult(auth);
+        if (!response) return;
+        const { displayName: name, email } = response.user;
+        const result = await axios.post(
+          serverUrl + "/api/auth/googlesignup",
+          { name, email, role: "student" },
+          { withCredentials: true }
+        );
+        dispatch(setUserData(result.data));
+        navigate("/");
+        toast.success("Login successful");
+      } catch (error) {
+        if (error?.code !== "auth/no-auth-event") {
+          toast.error(error.response?.data?.message || "Google login failed");
+        }
+      }
+    };
+    handleRedirectResult();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -46,20 +71,26 @@ function Login() {
 
   const googleLogin = async () => {
     try {
-      const response = await signInWithPopup(auth, provider);
-      const { displayName: name, email } = response.user;
-
-      // BUG 2 FIX: Default role to "student" instead of "" to avoid userModel enum validation error
-      const result = await axios.post(
-        serverUrl + "/api/auth/googlesignup",
-        { name, email, role: "student" },
-        { withCredentials: true }
-      );
-      dispatch(setUserData(result.data));
-      navigate("/");
-      toast.success("Login successful");
+      if (import.meta.env.MODE === 'development') {
+        // LOCAL: Use popup — redirect fails on localhost due to cross-site cookie blocking
+        const result = await signInWithPopup(auth, provider);
+        const { displayName: name, email } = result.user;
+        const res = await axios.post(
+          serverUrl + "/api/auth/googlesignup",
+          { name, email, role: "student" },
+          { withCredentials: true }
+        );
+        dispatch(setUserData(res.data));
+        navigate("/");
+        toast.success("Login successful");
+      } else {
+        // PRODUCTION: Use redirect — popup blocked by Render's COOP headers
+        await signInWithRedirect(auth, provider);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Google login failed");
+      if (error?.code !== 'auth/popup-closed-by-user') {
+        toast.error(error.response?.data?.message || "Google login failed. Please try again.");
+      }
     }
   };
 
