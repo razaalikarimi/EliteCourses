@@ -277,33 +277,36 @@ function ViewCourse() {
               </div>
             </section>
 
-            <section className="space-y-8 pt-8 border-t border-gray-100">
-              <h2 className="text-2xl font-bold text-gray-900">Student Reviews</h2>
-              <div className="space-y-6">
-                <div className="bg-white p-8 rounded-2xl border border-gray-100 space-y-4 shadow-sm">
-                  <p className="font-bold text-gray-900">Rate this course</p>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button key={star} onClick={() => setRating(star)}>
-                        <FaStar size={24} className={star <= rating ? "text-yellow-400" : "text-gray-200"} />
-                      </button>
-                    ))}
+            {/* Review Section — only visible to enrolled users */}
+            {isEnrolled && userData && (
+              <section className="space-y-8 pt-8 border-t border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900">Student Reviews</h2>
+                <div className="space-y-6">
+                  <div className="bg-white p-8 rounded-2xl border border-gray-100 space-y-4 shadow-sm">
+                    <p className="font-bold text-gray-900">Rate this course</p>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button key={star} onClick={() => setRating(star)}>
+                          <FaStar size={24} className={star <= rating ? "text-yellow-400" : "text-gray-200"} />
+                        </button>
+                      ))}
+                    </div>
+                    <textarea
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Tell us what you think about the course..."
+                      className="w-full bg-gray-50 border-0 rounded-xl p-4 text-gray-700 focus:ring-2 focus:ring-blue-100 min-h-[120px]"
+                    />
+                    <button
+                      className="px-6 py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-gray-800 transition-colors"
+                      onClick={handleReview}
+                    >
+                      Submit Review
+                    </button>
                   </div>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Tell us what you think about the course..."
-                    className="w-full bg-gray-50 border-0 rounded-xl p-4 text-gray-700 focus:ring-2 focus:ring-blue-100 min-h-[120px]"
-                  />
-                  <button
-                    className="px-6 py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-gray-800 transition-colors"
-                    onClick={handleReview}
-                  >
-                    Submit Review
-                  </button>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
           </div>
         </div>
       </div>
