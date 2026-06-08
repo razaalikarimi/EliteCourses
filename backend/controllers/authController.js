@@ -38,7 +38,9 @@ export const signUp=async (req,res)=>{
             sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(201).json(user)
+        // BUG-19 FIX: Strip password + OTP fields before sending to client
+        const safeUser = await User.findById(user._id).select("-password -resetOtp -otpExpires")
+        return res.status(201).json(safeUser)
 
     } catch (error) {
         console.log("signUp error")
@@ -64,7 +66,9 @@ export const login=async(req,res)=>{
             sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json(user)
+        // BUG-20 FIX: Strip password + OTP fields before sending to client
+        const safeUser = await User.findById(user._id).select("-password -resetOtp -otpExpires")
+        return res.status(200).json(safeUser)
 
     } catch (error) {
         console.log("login error")
@@ -126,7 +130,7 @@ export const sendOtp = async (req,res) => {
 
         user.resetOtp=otp,
         user.otpExpires=Date.now() + 5*60*1000,
-        user.isOtpVerifed= false 
+        user.isOtpVerified= false 
 
         await user.save()
         await sendMail(email,otp)
@@ -145,7 +149,7 @@ export const verifyOtp = async (req,res) => {
         if(!user || user.resetOtp!=otp || user.otpExpires<Date.now() ){
             return res.status(400).json({message:"Invalid OTP"})
         }
-        user.isOtpVerifed=true
+        user.isOtpVerified=true
         user.resetOtp=undefined
         user.otpExpires=undefined
         await user.save()
@@ -161,8 +165,8 @@ export const resetPassword = async (req,res) => {
     try {
         const {email ,password } =  req.body
          const user = await User.findOne({email})
-        if(!user || !user.isOtpVerifed ){
-            return res.status(404).json({message:"OTP verfication required"})
+        if(!user || !user.isOtpVerified ){
+            return res.status(404).json({message:"OTP verification required"})
         }
 
         if(password.length < 8){
@@ -171,7 +175,7 @@ export const resetPassword = async (req,res) => {
 
         const hashPassword = await bcrypt.hash(password,10)
         user.password = hashPassword
-        user.isOtpVerifed=false
+        user.isOtpVerified=false
         await user.save()
         return res.status(200).json({message:"Password Reset Successfully"})
     } catch (error) {
