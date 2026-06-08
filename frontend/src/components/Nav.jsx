@@ -190,9 +190,13 @@ function Nav() {
               <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/mydoubts"); setShowHam(false); }}>My Doubts</span>
             )}
             <div className="h-px bg-gray-100 my-2"></div>
-            <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/profile"); setShowHam(false); }}>Profile</span>
-            <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/enrolledcourses"); setShowHam(false); }}>My Courses</span>
-            <div className="h-px bg-gray-100 my-2"></div>
+            {userData && (
+              <>
+                <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/profile"); setShowHam(false); }}>Profile</span>
+                <span className="text-xl font-semibold text-gray-900 py-2" onClick={() => { navigate("/enrolledcourses"); setShowHam(false); }}>My Courses</span>
+                <div className="h-px bg-gray-100 my-2"></div>
+              </>
+            )}
             {!userData ? (
               <button 
                 className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg"
