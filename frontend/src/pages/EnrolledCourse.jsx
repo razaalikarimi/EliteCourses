@@ -51,18 +51,22 @@ function EnrolledCourse() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {userData.enrolledCourses.map((course) => (
+            {userData.enrolledCourses.map((course, index) => (
               <div
-                key={course._id}
+                key={course?._id || index}
                 className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-50 transition-all cursor-pointer"
-                onClick={() => navigate(`/viewlecture/${course._id}`)}
+                onClick={() => navigate(`/viewlecture/${course?._id || course}`)}
               >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={course.thumbnail}
-                    alt={course.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
+                <div className="relative aspect-video overflow-hidden bg-gray-100 flex items-center justify-center">
+                  {course?.thumbnail ? (
+                    <img
+                      src={course.thumbnail}
+                      alt={course.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <span className="text-4xl select-none">📘</span>
+                  )}
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <div className="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-xl">
                       <FaPlayCircle size={24} />
@@ -72,14 +76,14 @@ function EnrolledCourse() {
                 
                 <div className="p-6 space-y-4">
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{course.category}</span>
+                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{course?.category || 'Course'}</span>
                     <h2 className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
-                      {course.title}
+                      {course?.title || 'Loading...'}
                     </h2>
                   </div>
                   
                   <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{course.level || 'Beginner'}</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{course?.level || 'Beginner'}</span>
                     <span className="text-sm font-bold text-blue-600">Resume Class</span>
                   </div>
                 </div>
