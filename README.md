@@ -2,7 +2,7 @@
 
 # ⚡ EliteCourses
 
-### An AI-Powered Learning Management System built with the MERN Stack
+### A modern AI-powered Learning Management System built with MERN stack
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
