@@ -5,7 +5,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { MdOutlineRemoveRedEye, MdRemoveRedEye } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth, provider } from "../../utils/Firebase";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
@@ -24,6 +24,31 @@ function SignUp() {
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Handle redirect result on mount (only needed in production after Google redirect)
+  React.useEffect(() => {
+    if (import.meta.env.MODE === 'development') return; // popup handles it directly in dev
+    const handleRedirectResult = async () => {
+      try {
+        const response = await getRedirectResult(auth);
+        if (!response) return;
+        const { displayName: name, email } = response.user;
+        const result = await axios.post(
+          serverUrl + "/api/auth/googlesignup",
+          { name, email, role },
+          { withCredentials: true }
+        );
+        dispatch(setUserData(result.data));
+        navigate("/");
+        toast.success("Signed up with Google");
+      } catch (error) {
+        if (error?.code !== "auth/no-auth-event") {
+          toast.error(error.response?.data?.message || "Google sign up failed");
+        }
+      }
+    };
+    handleRedirectResult();
+  }, []);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -49,19 +74,26 @@ function SignUp() {
 
   const googleSignUp = async () => {
     try {
-      const response = await signInWithPopup(auth, provider);
-      const { displayName: name, email } = response.user;
-
-      const result = await axios.post(
-        serverUrl + "/api/auth/googlesignup",
-        { name, email, role },
-        { withCredentials: true }
-      );
-      dispatch(setUserData(result.data));
-      navigate("/");
-      toast.success("Signed up with Google");
+      if (import.meta.env.MODE === 'development') {
+        // LOCAL: Use popup — redirect fails on localhost due to cross-site cookie blocking
+        const result = await signInWithPopup(auth, provider);
+        const { displayName: userName, email: userEmail } = result.user;
+        const res = await axios.post(
+          serverUrl + "/api/auth/googlesignup",
+          { name: userName, email: userEmail, role },
+          { withCredentials: true }
+        );
+        dispatch(setUserData(res.data));
+        navigate("/");
+        toast.success("Signed up with Google");
+      } else {
+        // PRODUCTION: Use redirect — popup blocked by Render's COOP headers
+        await signInWithRedirect(auth, provider);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Google sign up failed");
+      if (error?.code !== 'auth/popup-closed-by-user') {
+        toast.error(error.response?.data?.message || "Google sign up failed. Please try again.");
+      }
     }
   };
 
