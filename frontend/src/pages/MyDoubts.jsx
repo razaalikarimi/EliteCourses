@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import AppShell from "../components/AppShell"
 import { serverUrl } from "../App"
 import { setDoubts, setActiveDoubt, updateDoubt, addDoubt } from "../redux/doubtSlice"
+import { toast } from "react-toastify"
 
 const statusConfig = {
   open:      { label: "Open",      color: "bg-blue-100 text-blue-700",   dot: "bg-blue-500"  },
@@ -112,19 +113,42 @@ const MyDoubts = () => {
   }
 
   const handleFollowUp = async () => {
-    if (!followUpInput.trim() || replyLoading) return
+    const messageText = followUpInput.trim()
+    if (!messageText || replyLoading) return
+
+    // Immediately clear input box and show loading state
+    setFollowUpInput("")
+    setReplyLoading(true)
+
+    // Optimistically add the student's message to the UI thread list instantly
+    const tempReply = {
+      message: messageText,
+      authorRole: "student",
+      authorName: userData?.name || "Student",
+      createdAt: new Date().toISOString()
+    }
+    
+    setLocalActiveDoubt(prev => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        replies: [...(prev.replies || []), tempReply]
+      }
+    })
+
     try {
-      setReplyLoading(true)
       const res = await axios.post(
         `${serverUrl}/api/doubt/${activeDoubt._id}/reply`,
-        { message: followUpInput.trim() },
+        { message: messageText },
         { withCredentials: true }
       )
       setLocalActiveDoubt(res.data.doubt)
       dispatch(updateDoubt(res.data.doubt))
-      setFollowUpInput("")
     } catch (err) {
       console.log(err)
+      toast.error("Failed to get answer. Please try again.")
+      // Rollback on failure
+      fetchThread(activeDoubt._id)
     } finally {
       setReplyLoading(false)
     }
