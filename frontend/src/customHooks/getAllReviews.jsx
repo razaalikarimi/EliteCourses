@@ -14,7 +14,6 @@ const useAllReviews = () => {
           withCredentials: true,
         });
 
-        console.log("all reviews:", result.data);
         dispatch(setAllReview(result.data));
       } catch (error) {
         console.log("all reviews error:", {
