@@ -76,7 +76,7 @@ export async function fetchYouTubeTranscriptText(url) {
     throw new Error("Failed to fetch transcript. Make sure captions are enabled on the video.");
   }
 
-  // Format transcript with timestamps so Gemini can map chunks
+  // Format transcript with timestamps so OpenAI can map chunks
   const rawText = transcriptObj.map((t) => {
     const startTime = formatDuration(t.offset);
     const text = t.text.replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"');

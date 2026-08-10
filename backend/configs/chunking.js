@@ -1,9 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import dotenv from "dotenv";
 dotenv.config();
 
 export async function cleanAndChunkContent(rawContent, resourceType) {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY });
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const systemPrompt = `You are an expert educational content structurer. 
 Your job is to take raw, messy educational text (like YouTube transcripts, OCR'd PDFs, or raw notes) and clean it up into high-quality semantic chunks for a RAG (Retrieval-Augmented Generation) system.
@@ -32,19 +32,19 @@ You MUST return a JSON object with a "chunks" array. Each item in the array must
 Return ONLY a valid JSON object. No markdown, no wrap codes, just raw JSON.`;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `Resource Type: ${resourceType}\n\nRaw Content:\n${rawContent}`,
-      config: {
-        systemInstruction: systemPrompt,
-        responseMimeType: "application/json",
-        temperature: 0.1
-      }
+    const response = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Resource Type: ${resourceType}\n\nRaw Content:\n${rawContent}` }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.1
     });
 
-    const text = response.text?.trim();
+    const text = response.choices[0]?.message?.content?.trim();
     if (!text) {
-      throw new Error("No response text from Gemini");
+      throw new Error("No response text from OpenAI");
     }
 
     const parsed = JSON.parse(text);
@@ -54,7 +54,7 @@ Return ONLY a valid JSON object. No markdown, no wrap codes, just raw JSON.`;
 
     return parsed.chunks;
   } catch (error) {
-    console.error("Gemini Chunking Error:", error);
+    console.error("OpenAI Chunking Error:", error);
     // Simple fallback chunking if AI fails
     return [
       {
