@@ -118,13 +118,13 @@ function EditProfile() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-bold text-gray-700 ml-1">Custom Gemini API Key (Optional)</label>
+                <label className="text-sm font-bold text-gray-700 ml-1">Custom OpenAI API Key (Optional)</label>
                 <div className="relative flex items-center">
                   <input
                     type={showApiKey ? "text" : "password"}
                     className="w-full pl-4 pr-12 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 transition-all font-mono text-sm"
                     value={customGeminiApiKey}
-                    placeholder="AIzaSy..."
+                    placeholder="sk-..."
                     onChange={(e) => setCustomGeminiApiKey(e.target.value)}
                   />
                   <button
@@ -136,7 +136,7 @@ function EditProfile() {
                   </button>
                 </div>
                 <p className="text-[11px] text-gray-400 font-medium ml-1">
-                  Get a free API Key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Google AI Studio</a> to bypass platform rate limits.
+                  Get an API Key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">OpenAI Platform</a> to bypass platform rate limits.
                 </p>
               </div>
             </div>

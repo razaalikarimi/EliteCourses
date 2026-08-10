@@ -283,7 +283,7 @@ const Ingest = () => {
                   )}
                 </div>
                 <p className="text-slate-400 text-xs">
-                  We'll download captions, clean the transcript with Gemini, and split it into semantic knowledge chunks.
+                  We'll download captions, clean the transcript with AI, and split it into semantic knowledge chunks.
                 </p>
               </div>
 
