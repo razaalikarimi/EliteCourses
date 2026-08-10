@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai"
+import OpenAI from "openai"
 import dotenv from "dotenv"
 import Doubt from "../models/doubtModel.js"
 import User from "../models/userModel.js"
@@ -37,7 +37,7 @@ const filterHallucinatedUrls = (text, relevantChunks) => {
 };
 
 // ─────────────────────────────────────────────
-// Gemini AI Response Generator (with RAG support)
+// OpenAI Response Generator (with RAG support)
 // ─────────────────────────────────────────────
 const generateAIResponse = async (currentQuestion, history = [], courseTitle = null, userId = null) => {
   let userCustomKey = null
@@ -48,18 +48,8 @@ const generateAIResponse = async (currentQuestion, history = [], courseTitle = n
         userCustomKey = user.customGeminiApiKey.trim()
       }
     }
-    const apiKey = userCustomKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY
-    const ai = new GoogleGenAI({ apiKey })
-
-    const historyText = history.length > 0
-      ? history
-          .slice(-6) // last 6 messages for context
-          .map(r => {
-            const role = r.authorRole === "student" ? "Student" : r.authorRole === "educator" ? "Educator" : "AI Tutor"
-            return `${role}: ${r.message}`
-          })
-          .join("\n\n")
-      : null
+    const apiKey = userCustomKey || process.env.OPENAI_API_KEY
+    const openai = new OpenAI({ apiKey })
 
     // Search Knowledge Base (MongoDB) for relevant material using text index
     let ragContext = "";
@@ -197,66 +187,29 @@ FORMATTING RULES:
 - Be accurate and stick to the provided study material when available.
 - Do not use unnecessary filler phrases, just answer directly.`
 
-    const provider = (process.env.AI_PROVIDER || "gemini").toLowerCase()
+    console.log("Using OpenAI Tutor...")
+    const openAiMessages = [
+      { role: "system", content: systemPrompt }
+    ]
 
-    if ((provider === "openai" || provider === "chatgpt") && process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "your_openai_api_key_here") {
-      console.log("Using OpenAI ChatGPT Tutor...")
-      const openAiMessages = [
-        { role: "system", content: systemPrompt }
-      ]
-
-      if (history && history.length > 0) {
-        history.slice(-6).forEach(r => {
-          openAiMessages.push({
-            role: r.authorRole === "student" ? "user" : "assistant",
-            content: r.message
-          })
-        })
-      }
-
-      openAiMessages.push({ role: "user", content: currentQuestion })
-
-      const openAiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: openAiMessages
+    if (history && history.length > 0) {
+      history.slice(-6).forEach(r => {
+        openAiMessages.push({
+          role: r.authorRole === "student" ? "user" : "assistant",
+          content: r.message
         })
       })
-
-      if (!openAiResponse.ok) {
-        const errorData = await openAiResponse.json()
-        throw new Error(errorData.error?.message || `OpenAI API returned status ${openAiResponse.status}`)
-      }
-
-      const data = await openAiResponse.json()
-      const rawText = data.choices[0]?.message?.content || "I'm having trouble generating a response right now. Please try again."
-      return filterHallucinatedUrls(rawText, relevantChunks)
-    } else {
-      console.log("Using Google Gemini Tutor...")
-      const prompt = `${systemPrompt}\n\n${historyText ? `Previous conversation:\n${historyText}\n\n` : ""}Student's current question: ${currentQuestion}`
-
-      let response
-      try {
-        response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          contents: prompt,
-        })
-      } catch (apiErr) {
-        console.log("Gemini 2.5 Flash failed or exhausted. Trying Gemini 2.5 Flash Lite fallback...")
-        response = await ai.models.generateContent({
-          model: "gemini-2.5-flash-lite",
-          contents: prompt,
-        })
-      }
-
-      const rawText = response.text || "I'm having trouble generating a response right now. Please try again."
-      return filterHallucinatedUrls(rawText, relevantChunks)
     }
+
+    openAiMessages.push({ role: "user", content: currentQuestion })
+
+    const openAiResponse = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      messages: openAiMessages
+    })
+
+    const rawText = openAiResponse.choices[0]?.message?.content || "I'm having trouble generating a response right now. Please try again."
+    return filterHallucinatedUrls(rawText, relevantChunks)
   } catch (error) {
     console.log("AI tutor error:", error)
 
@@ -276,16 +229,16 @@ FORMATTING RULES:
 
     if (isQuotaOrRateLimit(error)) {
       if (userCustomKey) {
-        return "I'm sorry, your custom Gemini API Key has exceeded its rate limit or quota. Please check your Google AI Studio usage/billing or wait a few seconds before trying again."
+        return "I'm sorry, your custom OpenAI API Key has exceeded its rate limit or quota. Please check your OpenAI dashboard usage/billing or wait a few seconds before trying again."
       } else {
-        return "The AI Tutor is temporarily busy because the platform's free Gemini quota has been reached. Please try again in a few seconds, or escalate this doubt to a mentor. You can also configure your own Gemini API Key in your Profile to bypass platform limits."
+        return "The AI Tutor is temporarily busy because the platform's free OpenAI quota has been reached. Please try again in a few seconds, or escalate this doubt to a mentor. You can also configure your own OpenAI API Key in your Profile to bypass platform limits."
       }
     }
 
     const errStr = (error.message || "").toLowerCase()
-    if (errStr.includes("api key") || errStr.includes("api_key_invalid") || errStr.includes("invalid api key") || (error.status === 400 && errStr.includes("key"))) {
+    if (errStr.includes("api key") || errStr.includes("api_key_invalid") || errStr.includes("invalid api key") || (error.status === 400 && errStr.includes("key")) || error.status === 401) {
       if (userCustomKey) {
-        return "It seems your custom Gemini API Key is invalid or expired. Please update it in your Profile settings."
+        return "It seems your custom OpenAI API Key is invalid or expired. Please update it in your Profile settings."
       }
     }
 
