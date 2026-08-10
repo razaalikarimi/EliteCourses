@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import dotenv from "dotenv";
 import Content from "./models/contentModel.js";
 import Course from "./models/courseModel.js";
@@ -15,7 +15,7 @@ const test = async () => {
   const history = [];
   const courseTitle = null;
 
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY });
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   let ragContext = "";
   const kbResults = await Content.find(
@@ -67,14 +67,16 @@ FORMATTING RULES:
 
   const prompt = `${systemPrompt}\n\nStudent's current question: ${currentQuestion}`;
 
-  console.log("PROMPT TO GEMINI:\n", prompt);
+  console.log("PROMPT TO OPENAI:\n", prompt);
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
+  const response = await openai.chat.completions.create({
+    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    messages: [
+      { role: "user", content: prompt }
+    ]
   });
 
-  console.log("\n=====================\nGEMINI RESPONSE:\n", response.text);
+  console.log("\n=====================\nOPENAI RESPONSE:\n", response.choices[0]?.message?.content);
 
   mongoose.disconnect();
 };
