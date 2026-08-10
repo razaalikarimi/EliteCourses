@@ -9,11 +9,11 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Gemini AI](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
 
 <br/>
 
-> **EliteCourses** is a production-ready LMS platform where students can discover, purchase, and learn from courses — while educators can create, manage, and monetize their content. Powered by Gemini AI for smart search, Razorpay for seamless payments, and Firebase for Google OAuth.
+> **EliteCourses** is a production-ready LMS platform where students can discover, purchase, and learn from courses — while educators can create, manage, and monetize their content. Powered by OpenAI for smart search, Razorpay for seamless payments, and Firebase for Google OAuth.
 
 <br/>
 
@@ -63,7 +63,7 @@ The platform follows a standard **client-server architecture** with a REST API b
 └───┬────────────┬──────────────┬──────────────┬───────────────────┘
     │            │              │              │
     ▼            ▼              ▼              ▼
- MongoDB     Cloudinary     Razorpay       Gemini AI
+ MongoDB     Cloudinary     Razorpay       OpenAI
  (Data)    (Media Storage)  (Payments)   (Smart Search)
 ```
 
@@ -117,9 +117,9 @@ The platform follows a standard **client-server architecture** with a REST API b
 
 ### 🎓 For Students
 - **Smart Course Discovery** — Browse by category, level, or price
-- **🤖 AI-Powered Search** — Describe what you want to learn in plain English; Gemini 2.5 Flash maps it to the right course category
-- **🤖 AI Tutor & Doubt Solver** — Ask questions 24/7. Powered by Gemini, retrieving study context from course lectures and ingested videos/documents
-- **Custom AI Keys** — Set up a personal Gemini API key in your Profile settings to bypass platform rate limits and query constraints
+- **🤖 AI-Powered Search** — Describe what you want to learn in plain English; gpt-4o-mini maps it to the right course category
+- **🤖 AI Tutor & Doubt Solver** — Ask questions 24/7. Powered by OpenAI, retrieving study context from course lectures and ingested videos/documents
+- **Custom AI Keys** — Set up a personal OpenAI API key in your Profile settings to bypass platform rate limits and query constraints
 - **Google OAuth** — One-click sign up with Google via Firebase
 - **Secure Payments** — Buy courses with Razorpay (UPI, cards, net banking)
 - **Video Learning** — Smooth in-browser video player for lectures
@@ -193,7 +193,7 @@ The application uses **MongoDB** with **Mongoose** ODM. Here's the core schema s
 | Auth | JWT + Firebase | Session & OAuth |
 | File Storage | Cloudinary | Images & videos |
 | Payments | Razorpay | Course purchases |
-| AI | Google Gemini 2.5 Flash | Smart course search |
+| AI | OpenAI gpt-4o-mini | Smart course search |
 | Email | Nodemailer + Gmail | OTP delivery |
 | Dev | Nodemon | Hot reload |
 
@@ -215,7 +215,7 @@ EliteCourses/
 │   │   ├── orderController.js     # Razorpay order creation
 │   │   ├── reviewController.js    # Course reviews
 │   │   ├── userController.js      # Profile management
-│   │   └── aiController.js        # Gemini AI search
+│   │   └── aiController.js        # OpenAI search
 │   ├── middlewares/
 │   │   ├── isAuth.js        # JWT verification middleware
 │   │   └── multer.js        # File upload middleware
@@ -246,7 +246,7 @@ EliteCourses/
     │   │   ├── ViewCourse.jsx        # Course details + payment
     │   │   ├── EnrolledCourse.jsx    # My courses
     │   │   ├── ViewLecture.jsx       # Video player
-    │   │   ├── SearchWithAi.jsx      # Gemini AI search
+    │   │   ├── SearchWithAi.jsx      # OpenAI search
     │   │   ├── Profile.jsx
     │   │   ├── EditProfile.jsx
     │   │   └── admin/
@@ -310,7 +310,8 @@ EMAIL_PASS=your_gmail_app_password
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
 RAZORPAY_SECRET=your_razorpay_secret
 
-GOOGLE_GENAI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_MODEL=gpt-4o-mini
 ```
 
 ### 3. Setup Frontend
@@ -385,19 +386,19 @@ npm run dev
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| POST | `/search` | Gemini-powered course search | ❌ |
+| POST | `/search` | OpenAI-powered course search | ❌ |
 
 ---
 
 ## 🧠 How the AI Search Works
 
-The AI search uses **Google Gemini 2.5 Flash** to understand natural language queries and map them to course categories.
+The AI search uses **OpenAI (gpt-4o-mini)** to understand natural language queries and map them to course categories.
 
 ```
 User types: "I want to learn machine learning for beginners"
                           │
                           ▼
-             Gemini 2.5 Flash processes intent
+             gpt-4o-mini processes intent
                           │
                           ▼
               Returns keyword: "AI/ML" or "Beginner"
@@ -429,7 +430,8 @@ If a direct text match is found first, it's returned immediately. The AI fallbac
 | `EMAIL_PASS` | Gmail App Password (not your login password) |
 | `RAZORPAY_KEY_ID` | Razorpay API key ID |
 | `RAZORPAY_SECRET` | Razorpay API secret |
-| `GOOGLE_GENAI_API_KEY` | Google AI Studio API key |
+| `OPENAI_API_KEY` | OpenAI Platform API key |
+| `OPENAI_MODEL` | Selected OpenAI model (e.g. gpt-4o-mini) |
 
 ### Frontend
 
