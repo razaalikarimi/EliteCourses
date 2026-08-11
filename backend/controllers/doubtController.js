@@ -14,17 +14,28 @@ const filterHallucinatedUrls = (text, relevantChunks) => {
   
   let filteredText = text.replace(urlRegex, (url) => {
     const cleanUrl = url.replace(/[.,)]+$/, "");
+    let matchedAllowedUrl = null;
+
     const isAllowed = allowedUrls.some(allowed => {
-      if (allowed === cleanUrl) return true;
+      if (allowed === cleanUrl) {
+        matchedAllowedUrl = allowed;
+        return true;
+      }
       const getYouTubeId = (u) => {
         const match = u.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([a-zA-Z0-9_-]{11})/);
         return match ? match[1] : null;
       };
       const allowedId = getYouTubeId(allowed);
       const cleanId = getYouTubeId(cleanUrl);
-      return allowedId && cleanId && allowedId === cleanId;
+      if (allowedId && cleanId && allowedId === cleanId) {
+        matchedAllowedUrl = allowed;
+        return true;
+      }
+      return false;
     });
-    return isAllowed ? url : "";
+    
+    // Always use the EXACT URL from our DB (which has the &t= timestamp)
+    return isAllowed ? matchedAllowedUrl : "";
   });
 
   // Remove trailing "Source:" or "Link:" headers if the URL was removed
@@ -66,22 +77,28 @@ const generateAIResponse = async (currentQuestion, history = [], courseTitle = n
 
       // ── 2. Search instructor course lectures by title keyword match ──
       const keywords = currentQuestion
+        .replace(/[^\w\s]/g, "")
         .split(/\s+/)
-        .filter(w => w.length > 2)
-        .slice(0, 5);
+        .filter(w => w.length > 3) // Ignore short words like "is", "a", "the", "how"
+        .slice(0, 4);
+
+      let andRegex = "";
+      if (keywords.length > 0) {
+        // Creates a regex that requires ALL keywords to be present: (?=.*word1)(?=.*word2)
+        andRegex = `^${keywords.map(k => `(?=.*${k})`).join("")}.*$`;
+      }
 
       const lectureResults = keywords.length > 0
         ? await Course.find({
             isPublished: true,
             $or: [
-              { title: { $regex: keywords.join("|"), $options: "i" } },
-              { description: { $regex: keywords.join("|"), $options: "i" } },
-              { category: { $regex: keywords.join("|"), $options: "i" } },
+              { title: { $regex: andRegex, $options: "i" } },
+              { category: { $regex: andRegex, $options: "i" } },
             ],
           })
             .populate({
               path: "lectures",
-              match: { lectureTitle: { $regex: keywords.join("|"), $options: "i" } },
+              match: { lectureTitle: { $regex: andRegex, $options: "i" } },
             })
             .populate("creator", "name")
             .limit(3)
@@ -121,7 +138,26 @@ const generateAIResponse = async (currentQuestion, history = [], courseTitle = n
       kbResults.forEach(doc => {
         if (kbCount >= 2) return;
         if (doc.chunks && doc.chunks.length > 0) {
-          const chunk = doc.chunks[0]; // take only top chunk per KB doc
+          // Find the chunk that best matches the student's question
+          let bestChunk = doc.chunks[0];
+          const searchTerms = currentQuestion.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+          
+          if (searchTerms.length > 0) {
+            let maxScore = -1;
+            doc.chunks.forEach(c => {
+              let score = 0;
+              const textLower = (c.text || "").toLowerCase();
+              searchTerms.forEach(term => {
+                if (textLower.includes(term)) score++;
+              });
+              if (score > maxScore) {
+                maxScore = score;
+                bestChunk = c;
+              }
+            });
+          }
+          
+          const chunk = bestChunk;
           let chunkUrl = doc.url || "";
           if (chunk.startTime && doc.url && (doc.url.includes("youtube.com") || doc.url.includes("youtu.be"))) {
             const secs = timeToSeconds(chunk.startTime);
@@ -134,7 +170,7 @@ const generateAIResponse = async (currentQuestion, history = [], courseTitle = n
           relevantChunks.push({
             title: doc.title,
             topic: chunk.topic,
-            text: chunk.text,
+            text: chunk.text ? chunk.text.slice(0, 3000) + (chunk.text.length > 3000 ? "..." : "") : "",
             url: chunkUrl,
             startTime: chunk.startTime || null,
             sourceType: "knowledge_base",
@@ -170,12 +206,9 @@ ${courseContext}
 ${ragContext}
 
 LANGUAGE RULE (most important — follow strictly):
-- Detect the language of the student's question and reply in the EXACT same language.
-- If the student writes in English, reply in English.
-- If the student writes in Hindi (Roman script / Hinglish), reply in Hinglish.
-- If the student writes in pure Hindi (Devanagari), reply in pure Hindi.
-- If the student writes in any other language (Urdu, Tamil, etc.), reply in that language.
-- Match the student's language naturally. Never switch to a different language than what the student used.
+- Detect the language of the student's question and reply in the EXACT same language (English -> English, Hinglish -> Hinglish, Pure Hindi -> Pure Hindi).
+- If the student explicitly commands a language change mid-conversation (e.g. "in hinglish", "explain in english", "hindi me batao"), you MUST immediately switch and reply in that requested language.
+- Otherwise, match the language of their current question naturally.
 
 FORMATTING RULES:
 - Do NOT use markdown symbols like **, *, ##, __, or any other markdown formatting.

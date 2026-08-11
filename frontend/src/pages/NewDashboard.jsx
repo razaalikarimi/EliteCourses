@@ -102,9 +102,9 @@ function NewDashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {enrolledCourses.map((course) => (
+              {enrolledCourses.map((course, index) => (
                 <div
-                  key={course._id}
+                  key={course._id || index}
                   className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm flex flex-col group hover:shadow-md transition-shadow"
                 >
                   <div className="h-40 bg-slate-100 relative overflow-hidden flex items-center justify-center">

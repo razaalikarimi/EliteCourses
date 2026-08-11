@@ -34,7 +34,7 @@ import getCouseData from "./customHooks/getCouseData";
 import getCreatorCourseData from "./customHooks/getCreatorCourseData";
 import getAllReviews from "./customHooks/getAllReviews";
 
-export const serverUrl = import.meta.env.MODE === "development" ? "http://localhost:8000" : "https://elitecoursesb.onrender.com";
+export const serverUrl = import.meta.env.MODE === "development" ? `http://${window.location.hostname}:8000` : "https://elitecoursesb.onrender.com";
 
 function App() {
   const { userData } = useSelector((state) => state.user);

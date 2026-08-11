@@ -10,7 +10,7 @@ const useCreatorCourseData = () => {
 
   useEffect(() => {
    
-    if (!userData || !userData._id) return;
+    if (!userData || !userData._id || userData.role !== 'educator') return;
 
     const getCreatorData = async () => {
       try {

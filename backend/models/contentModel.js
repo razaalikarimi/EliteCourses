@@ -46,7 +46,10 @@ const contentSchema = new mongoose.Schema(
 );
 
 // FIX: Added chunks.text to text index so RAG search can find content inside video transcripts/chunks
-contentSchema.index({ title: "text", rawContent: "text", "chunks.text": "text", tags: "text" });
+contentSchema.index(
+  { title: "text", "chunks.topic": "text", tags: "text", rawContent: "text", "chunks.text": "text" },
+  { weights: { title: 10, "chunks.topic": 5, tags: 5, rawContent: 1, "chunks.text": 1 } }
+);
 
 const Content = mongoose.models.Content || mongoose.model("Content", contentSchema);
 

@@ -19,9 +19,17 @@ const renderMessage = (text) => {
   const allSources = [...text.matchAll(sourceRegex)].map((m) => m[1])
   const mainText = text.replace(/Source:\s*https?:\/\/[^\s]+/gi, "").trim()
 
+  // Parse **bold** text manually
+  const formattedText = mainText.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index} className="font-bold text-slate-900">{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+
   return (
     <>
-      <span style={{ whiteSpace: "pre-wrap" }}>{mainText}</span>
+      <span style={{ whiteSpace: "pre-wrap" }}>{formattedText}</span>
       {allSources.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
           {allSources.map((url, i) => (
