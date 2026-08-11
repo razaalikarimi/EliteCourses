@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import axios from "axios"
 import { motion, AnimatePresence } from "framer-motion"
 import AppShell from "../components/AppShell"
 import { serverUrl } from "../App"
-import { setDoubts, setActiveDoubt, updateDoubt, addDoubt } from "../redux/doubtSlice"
+import { setDoubts, setActiveDoubt, updateDoubt, addDoubt, removeDoubt } from "../redux/doubtSlice"
 import { toast } from "react-toastify"
 
 const statusConfig = {
@@ -66,12 +66,33 @@ const MyDoubts = () => {
   const [activeDoubt, setLocalActiveDoubt] = useState(null)
   const [followUpInput, setFollowUpInput] = useState("")
   const [replyLoading, setReplyLoading] = useState(false)
+  const messagesEndRef = useRef(null)
+
+  // Auto-scroll to the bottom when messages change or AI is typing
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [activeDoubt?.replies?.length, replyLoading])
 
   // ChatGPT-style state
   const [isCreatingNewDoubt, setIsCreatingNewDoubt] = useState(false)
   const [newDoubtInput, setNewDoubtInput] = useState("")
   const [newDoubtCourse, setNewDoubtCourse] = useState("")
   const [newDoubtLoading, setNewDoubtLoading] = useState(false)
+
+  const handleDeleteDoubt = async (e, doubtId) => {
+    e.stopPropagation()
+    if (!window.confirm("Are you sure you want to delete this doubt?")) return
+    try {
+      await axios.delete(`${serverUrl}/api/doubt/${doubtId}`, { withCredentials: true })
+      dispatch(removeDoubt(doubtId))
+      if (activeDoubt?._id === doubtId) setLocalActiveDoubt(null)
+      toast.success("Doubt deleted!")
+    } catch (err) {
+      toast.error("Failed to delete doubt.")
+    }
+  }
 
   const handleCreateNewDoubt = async () => {
     if (!newDoubtInput.trim() || newDoubtLoading) return
@@ -275,7 +296,14 @@ const MyDoubts = () => {
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-400">
                       <span>{doubt.replies?.length || 0} msgs</span>
-                      <span>{new Date(doubt.updatedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+                      <div className="flex items-center gap-2">
+                        <span>{new Date(doubt.updatedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+                        <span
+                          onClick={(e) => handleDeleteDoubt(e, doubt._id)}
+                          className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all cursor-pointer"
+                          title="Delete doubt"
+                        >🗑️</span>
+                      </div>
                     </div>
                   </motion.button>
                 ))
@@ -288,8 +316,7 @@ const MyDoubts = () => {
             {isCreatingNewDoubt ? (
               <div className="flex-1 flex flex-col justify-center items-center p-6 h-full overflow-y-auto">
                 <div className="max-w-md w-full text-center space-y-6">
-                  <div>
-                    <span className="text-5xl">✨</span>
+                <div>
                     <h2 className="text-2xl font-black text-slate-900 tracking-tight mt-4">Ask a New Doubt</h2>
                     <p className="text-slate-500 text-xs mt-1.5">Ask anything — our AI Tutor will check course lectures and resources to answer you instantly.</p>
                   </div>
@@ -403,6 +430,9 @@ const MyDoubts = () => {
                       </div>
                     </div>
                   )}
+
+                  {/* Auto-scroll anchor */}
+                  <div ref={messagesEndRef} />
 
                   {/* Feedback */}
                   {activeDoubt.replies?.length > 1 && activeDoubt.replies[activeDoubt.replies.length - 1]?.authorRole === "ai" && activeDoubt.status !== "escalated" && (

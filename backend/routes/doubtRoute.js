@@ -9,6 +9,7 @@ import {
   submitFeedback,
   getEscalatedDoubts,
   educatorReply,
+  deleteDoubt,
 } from "../controllers/doubtController.js"
 
 const doubtRouter = express.Router()
@@ -22,5 +23,6 @@ doubtRouter.post("/:doubtId/reply", isAuth, sendFollowUp)
 doubtRouter.post("/:doubtId/escalate", isAuth, escalateDoubt)
 doubtRouter.post("/:doubtId/feedback", isAuth, submitFeedback)
 doubtRouter.post("/:doubtId/educatorreply", isAuth, educatorReply)
+doubtRouter.delete("/:doubtId", isAuth, deleteDoubt)
 
 export default doubtRouter

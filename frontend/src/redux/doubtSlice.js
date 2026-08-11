@@ -27,8 +27,14 @@ const doubtSlice = createSlice({
       state.doubts = []
       state.activeDoubt = null
     },
+    removeDoubt: (state, action) => {
+      state.doubts = state.doubts.filter(d => d._id !== action.payload)
+      if (state.activeDoubt?._id === action.payload) {
+        state.activeDoubt = null
+      }
+    },
   },
 })
 
-export const { setDoubts, setActiveDoubt, addDoubt, updateDoubt, clearDoubts } = doubtSlice.actions
+export const { setDoubts, setActiveDoubt, addDoubt, updateDoubt, clearDoubts, removeDoubt } = doubtSlice.actions
 export default doubtSlice.reducer

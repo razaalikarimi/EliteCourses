@@ -584,3 +584,26 @@ export const educatorReply = async (req, res) => {
     res.status(500).json({ message: "Server error." })
   }
 }
+
+// ─────────────────────────────────────────────
+// Delete Doubt — Student can delete their own doubt
+// ─────────────────────────────────────────────
+export const deleteDoubt = async (req, res) => {
+  try {
+    const userId = req.userId
+    const { doubtId } = req.params
+
+    const doubt = await Doubt.findById(doubtId)
+    if (!doubt) return res.status(404).json({ message: "Doubt not found." })
+
+    if (doubt.userId.toString() !== userId) {
+      return res.status(403).json({ message: "You can only delete your own doubts." })
+    }
+
+    await Doubt.findByIdAndDelete(doubtId)
+    res.json({ success: true, message: "Doubt deleted." })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error." })
+  }
+}
