@@ -207,8 +207,8 @@ ${ragContext}
 
 LANGUAGE RULE (most important — follow strictly):
 - Detect the language of the student's question and reply in the EXACT same language (English -> English, Hinglish -> Hinglish, Pure Hindi -> Pure Hindi).
-- If the student explicitly commands a language change mid-conversation (e.g. "in hinglish", "explain in english", "hindi me batao"), you MUST immediately switch and reply in that requested language.
-- Otherwise, match the language of their current question naturally.
+- If the student's question is just a single word, a technology name (e.g., "React", "Vue.js"), or the language is ambiguous, you MUST DEFAULT to replying in English.
+- If the student explicitly commands a language change mid-conversation (e.g. "in hinglish", "explain in english"), you MUST immediately switch and reply in that requested language.
 
 FORMATTING RULES:
 - Do NOT use markdown symbols like **, *, ##, __, or any other markdown formatting.

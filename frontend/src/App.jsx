@@ -37,13 +37,25 @@ import getAllReviews from "./customHooks/getAllReviews";
 export const serverUrl = import.meta.env.MODE === "development" ? `http://${window.location.hostname}:8000` : "https://elitecoursesb.onrender.com";
 
 function App() {
-  const { userData } = useSelector((state) => state.user);
+  const { userData, isAuthLoading } = useSelector((state) => state.user);
 
   // global data loaders
   getCurrentUser();
   getCouseData();
   getCreatorCourseData();
   getAllReviews();
+
+  // Show loading screen while checking auth status
+  if (isAuthLoading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0f0f1a" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: "40px", height: "40px", border: "4px solid rgba(255,255,255,0.1)", borderTopColor: "#8b5cf6", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto" }} />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

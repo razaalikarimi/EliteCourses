@@ -13,11 +13,14 @@ const statusConfig = {
   escalated: { label: "Escalated", color: "bg-amber-100 text-amber-700", dot: "bg-amber-500" },
 }
 
-// Renders message — detects all "Source: <url>" lines and shows styled clickable resource buttons
+// Renders message — detects all URLs and shows styled clickable resource buttons
 const renderMessage = (text) => {
-  const sourceRegex = /Source:\s*(https?:\/\/[^\s]+)/gi
-  const allSources = [...text.matchAll(sourceRegex)].map((m) => m[1])
-  const mainText = text.replace(/Source:\s*https?:\/\/[^\s]+/gi, "").trim()
+  // Match any URL starting with http, optionally prefixed by Source: or Link:
+  const urlRegex = /(?:Source:\s*|Link:\s*)?(https?:\/\/[^\s]+)/gi
+  // Extract unique URLs
+  const allSources = [...new Set([...text.matchAll(urlRegex)].map((m) => m[1]))]
+  // Remove URLs from main text
+  const mainText = text.replace(urlRegex, "").trim()
 
   // Parse **bold** text manually
   const formattedText = mainText.split(/(\*\*.*?\*\*)/g).map((part, index) => {
